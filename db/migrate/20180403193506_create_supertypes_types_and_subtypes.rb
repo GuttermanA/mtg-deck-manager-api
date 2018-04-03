@@ -6,8 +6,8 @@ class CreateSupertypesTypesAndSubtypes < ActiveRecord::Migration[5.1]
     end
 
     create_table :cards_supertypes, id: false do |t|
-      belongs_to :card, index: true
-      belongs_to :supertype, index: true
+      t.belongs_to :card, index: true
+      t.belongs_to :supertype, index: true
     end
 
     create_table :types do |t|
@@ -15,9 +15,9 @@ class CreateSupertypesTypesAndSubtypes < ActiveRecord::Migration[5.1]
       t.timestamps
     end
 
-    create_table :cards_supertypes, id: false do |t|
-      belongs_to :card, index: true
-      belongs_to :type, index: true
+    create_table :cards_types, id: false do |t|
+      t.belongs_to :card, index: true
+      t.belongs_to :type, index: true
     end
 
     create_table :subtypes do |t|
@@ -25,9 +25,9 @@ class CreateSupertypesTypesAndSubtypes < ActiveRecord::Migration[5.1]
       t.timestamps
     end
 
-    create_table :cards_supertypes, id: false do |t|
-      belongs_to :card, index: true
-      belongs_to :subtype, index: true
+    create_table :cards_subtypes, id: false do |t|
+      t.belongs_to :card, index: true
+      t.belongs_to :subtype, index: true
     end
 
   end

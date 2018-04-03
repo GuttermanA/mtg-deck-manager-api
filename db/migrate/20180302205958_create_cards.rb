@@ -33,7 +33,7 @@ class CreateCards < ActiveRecord::Migration[5.1]
       t.string :img_url
       t.integer :multiverse_id
       t.string :layout
-      belongs_to :set, index: true
+      t.belongs_to :set, index: true
     end
   end
 end
