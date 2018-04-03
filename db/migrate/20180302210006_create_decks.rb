@@ -3,6 +3,7 @@ class CreateDecks < ActiveRecord::Migration[5.1]
     create_table :decks do |t|
       t.string :name
       t.string :creator
+      t.string :archtype
       t.belongs_to :format, index: true
       t.belongs_to :user, index: true
       t.integer :total_cards
