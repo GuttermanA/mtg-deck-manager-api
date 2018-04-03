@@ -48,6 +48,7 @@ GEM
       descendants_tracker (~> 0.0.4)
       ice_nine (~> 0.11.0)
       thread_safe (~> 0.3, >= 0.3.1)
+    bcrypt (3.1.11)
     builder (3.2.3)
     byebug (10.0.0)
     case_transform (0.2)
@@ -171,6 +172,7 @@ PLATFORMS
 
 DEPENDENCIES
   active_model_serializers (~> 0.10.0)
+  bcrypt (~> 3.1.7)
   byebug
   listen (>= 3.0.5, < 3.2)
   mtg_sdk

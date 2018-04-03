@@ -10,14 +10,14 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20180403193506) do
+ActiveRecord::Schema.define(version: 20180403203423) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
 
   create_table "card_formats", force: :cascade do |t|
-    t.integer "card_id"
-    t.integer "format_id"
+    t.bigint "card_id"
+    t.bigint "format_id"
     t.boolean "legal", default: true
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
@@ -41,7 +41,7 @@ ActiveRecord::Schema.define(version: 20180403193506) do
     t.string "img_url"
     t.integer "multiverse_id"
     t.string "layout"
-    t.integer "set_id"
+    t.bigint "set_id"
     t.index ["set_id"], name: "index_cards_on_set_id"
   end
 
@@ -88,7 +88,7 @@ ActiveRecord::Schema.define(version: 20180403193506) do
 
   create_table "deck_cards", force: :cascade do |t|
     t.integer "deck_id"
-    t.integer "card_id"
+    t.bigint "card_id"
     t.integer "card_count"
     t.boolean "sideboard", default: false
     t.datetime "created_at", null: false
@@ -99,12 +99,17 @@ ActiveRecord::Schema.define(version: 20180403193506) do
 
   create_table "decks", force: :cascade do |t|
     t.string "name"
-    t.integer "format_id"
-    t.integer "card_count"
+    t.string "creator"
+    t.bigint "format_id"
+    t.bigint "user_id"
+    t.integer "total_cards"
+    t.integer "mainboard"
+    t.string "sideboard"
     t.boolean "tournament", default: false
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
     t.index ["format_id"], name: "index_decks_on_format_id"
+    t.index ["user_id"], name: "index_decks_on_user_id"
   end
 
   create_table "formats", force: :cascade do |t|
@@ -136,6 +141,13 @@ ActiveRecord::Schema.define(version: 20180403193506) do
 
   create_table "types", force: :cascade do |t|
     t.string "name"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+  end
+
+  create_table "users", force: :cascade do |t|
+    t.string "name"
+    t.string "password_digest"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
   end

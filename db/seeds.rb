@@ -55,6 +55,8 @@ all_cards.each do |card|
     toughness: card.toughness,
     loyalty: card.loyalty,
     img_url: card.image_url,
+    multiverse_id: card.multiverse_id,
+    layout: card.layout
     set_id: Set.find_or_create_by(name: card.set_name).id
   )
   new_card.save
