@@ -26,12 +26,14 @@ class CreateCards < ActiveRecord::Migration[5.1]
       t.string :text
       t.string :flavor
       t.string :artist
-      t.integer :collector_number
-      t.integer :power
-      t.integer :toughness
+      t.string :number
+      t.string :power
+      t.string :toughness
       t.integer :loyalty
       t.string :img_url
-      t.integer :mtg_set_id
+      t.integer :multiverse_id
+      t.string :layout
+      belongs_to :set, index: true
     end
   end
 end

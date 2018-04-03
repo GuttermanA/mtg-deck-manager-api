@@ -31,7 +31,7 @@ all_cards = MTG::Card.where(gameFormat: 'standard').all
 all_sets = MTG::Set.all
 
 all_sets.each do |set|
-  new_set = MtgSet.new(
+  new_set = Set.new(
     name: set.name,
     code: set.code,
     release_date: set.release_date,
@@ -55,7 +55,7 @@ all_cards.each do |card|
     toughness: card.toughness,
     loyalty: card.loyalty,
     img_url: card.image_url,
-    mtg_set_id: MtgSet.find_or_create_by(name: card.set_name).id
+    set_id: Set.find_or_create_by(name: card.set_name).id
   )
   new_card.save
   card.legalities.each do |legality|
