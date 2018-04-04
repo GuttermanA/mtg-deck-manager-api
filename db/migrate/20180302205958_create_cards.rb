@@ -17,13 +17,14 @@ class CreateCards < ActiveRecord::Migration[5.1]
   #   end
   # end
   def change
+    enable_extension :citext
     create_table :cards do |t|
-      t.string :name, index: true
+      t.citext :name, index: true
       t.string :mana_cost
       t.integer :cmc
-      t.string :full_type
+      t.citext :full_type, index: true
       t.string :rarity
-      t.string :text
+      t.citext :text
       t.string :flavor
       t.string :artist
       t.string :number

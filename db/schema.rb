@@ -14,6 +14,7 @@ ActiveRecord::Schema.define(version: 20180404151446) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
+  enable_extension "citext"
 
   create_table "card_formats", force: :cascade do |t|
     t.bigint "card_id"
@@ -26,12 +27,12 @@ ActiveRecord::Schema.define(version: 20180404151446) do
   end
 
   create_table "cards", force: :cascade do |t|
-    t.string "name"
+    t.citext "name"
     t.string "mana_cost"
     t.integer "cmc"
-    t.string "full_type"
+    t.citext "full_type"
     t.string "rarity"
-    t.string "text"
+    t.citext "text"
     t.string "flavor"
     t.string "artist"
     t.string "number"
@@ -42,6 +43,7 @@ ActiveRecord::Schema.define(version: 20180404151446) do
     t.integer "multiverse_id"
     t.string "layout"
     t.bigint "magic_set_id"
+    t.index ["full_type"], name: "index_cards_on_full_type"
     t.index ["magic_set_id"], name: "index_cards_on_magic_set_id"
     t.index ["name"], name: "index_cards_on_name"
   end
@@ -114,9 +116,9 @@ ActiveRecord::Schema.define(version: 20180404151446) do
   end
 
   create_table "decks", force: :cascade do |t|
-    t.string "name"
+    t.citext "name"
     t.string "creator"
-    t.string "archtype"
+    t.citext "archtype"
     t.bigint "format_id"
     t.bigint "user_id"
     t.integer "total_cards"
@@ -125,6 +127,7 @@ ActiveRecord::Schema.define(version: 20180404151446) do
     t.boolean "tournament", default: false
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
+    t.index ["archtype"], name: "index_decks_on_archtype"
     t.index ["format_id"], name: "index_decks_on_format_id"
     t.index ["user_id"], name: "index_decks_on_user_id"
   end

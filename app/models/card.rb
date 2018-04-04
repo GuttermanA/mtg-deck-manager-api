@@ -19,11 +19,11 @@ class Card < ApplicationRecord
   scope :colors, -> (args) { joins(:colors).where('colors.name': args).references(:colors) }
   scope :wildcard, -> (column, arg) { where("#{column} LIKE ?", "%#{arg}%")}
 
-  def self.search(card_params)
-    name_wildcard_search = "%#{card_params["name"]}%"
-    type_wildcard_search = "%#{card_params["type"]}%"
-
-    Card.where("name LIKE ? OR base_type LIKE ?", name_wildcard_search, type_wildcard_search)
+  def self.search(params)
+    if params["name"]
+      Card.wildcard("name", params["name"])
+    end
   end
+
 
 end
