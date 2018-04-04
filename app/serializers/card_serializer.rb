@@ -1,5 +1,5 @@
 class CardSerializer < ActiveModel::Serializer
-  attributes :name, :mana_cost, :cmc, :full_type, :rarity, :text, :flavor, :artist, :number, :power, :toughness, :loyalty, :img_url, :layout, :printings, :latest_set, :colors, :formats, :supertypes, :subtypes, :types
+  attributes :name, :mana_cost, :cmc, :full_type, :rarity, :text, :flavor, :artist, :number, :power, :toughness, :loyalty, :img_url, :layout, :multiverse_id, :printings, :latest_set, :colors, :formats, :supertypes, :subtypes, :types
 
   def printings
     object.magic_sets
