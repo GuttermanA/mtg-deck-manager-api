@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20180403210447) do
+ActiveRecord::Schema.define(version: 20180404151446) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -41,8 +41,9 @@ ActiveRecord::Schema.define(version: 20180403210447) do
     t.string "img_url"
     t.integer "multiverse_id"
     t.string "layout"
-    t.bigint "set_id"
-    t.index ["set_id"], name: "index_cards_on_set_id"
+    t.bigint "magic_set_id"
+    t.index ["magic_set_id"], name: "index_cards_on_magic_set_id"
+    t.index ["name"], name: "index_cards_on_name"
   end
 
   create_table "cards_colors", id: false, force: :cascade do |t|
@@ -52,11 +53,11 @@ ActiveRecord::Schema.define(version: 20180403210447) do
     t.index ["color_id"], name: "index_cards_colors_on_color_id"
   end
 
-  create_table "cards_sets", id: false, force: :cascade do |t|
+  create_table "cards_magic_sets", id: false, force: :cascade do |t|
     t.bigint "card_id"
-    t.bigint "set_id"
-    t.index ["card_id"], name: "index_cards_sets_on_card_id"
-    t.index ["set_id"], name: "index_cards_sets_on_set_id"
+    t.bigint "magic_set_id"
+    t.index ["card_id"], name: "index_cards_magic_sets_on_card_id"
+    t.index ["magic_set_id"], name: "index_cards_magic_sets_on_magic_set_id"
   end
 
   create_table "cards_subtypes", id: false, force: :cascade do |t|
@@ -83,7 +84,7 @@ ActiveRecord::Schema.define(version: 20180403210447) do
   create_table "collections", force: :cascade do |t|
     t.bigint "user_id"
     t.bigint "card_id"
-    t.bigint "set_id"
+    t.bigint "magic_set_id"
     t.integer "count"
     t.boolean "premium", default: false
     t.string "condition"
@@ -91,7 +92,7 @@ ActiveRecord::Schema.define(version: 20180403210447) do
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
     t.index ["card_id"], name: "index_collections_on_card_id"
-    t.index ["set_id"], name: "index_collections_on_set_id"
+    t.index ["magic_set_id"], name: "index_collections_on_magic_set_id"
     t.index ["user_id"], name: "index_collections_on_user_id"
   end
 
@@ -134,7 +135,7 @@ ActiveRecord::Schema.define(version: 20180403210447) do
     t.datetime "updated_at", null: false
   end
 
-  create_table "sets", force: :cascade do |t|
+  create_table "magic_sets", force: :cascade do |t|
     t.string "name"
     t.string "code"
     t.date "release_date"

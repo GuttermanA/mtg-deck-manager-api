@@ -1,16 +1,16 @@
 class Card < ApplicationRecord
-  belongs_to :set
+  belongs_to :magic_set
 
   has_many :deck_cards
   has_many :decks, through: :deck_cards
   has_many :card_formats
   has_many :formats, through: :card_formats
 
-  has_many_and_belongs_to_many :colors
-  has_many_and_belongs_to_many :sets
-  has_many_and_belongs_to_many :supertypes
-  has_many_and_belongs_to_many :types
-  has_many_and_belongs_to_many :subtypes
+  has_and_belongs_to_many :colors
+  has_and_belongs_to_many :magic_sets
+  has_and_belongs_to_many :supertypes
+  has_and_belongs_to_many :types
+  has_and_belongs_to_many :subtypes
 
   validates :name, uniqueness: true
   validates :img_url, presence: true

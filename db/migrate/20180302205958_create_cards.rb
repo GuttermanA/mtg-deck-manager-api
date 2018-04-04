@@ -18,7 +18,7 @@ class CreateCards < ActiveRecord::Migration[5.1]
   # end
   def change
     create_table :cards do |t|
-      t.string :name
+      t.string :name, index: true
       t.string :mana_cost
       t.integer :cmc
       t.string :full_type
@@ -33,7 +33,7 @@ class CreateCards < ActiveRecord::Migration[5.1]
       t.string :img_url
       t.integer :multiverse_id
       t.string :layout
-      t.belongs_to :set, index: true
+      t.belongs_to :magic_set, index: true
     end
   end
 end

@@ -1,6 +1,6 @@
-class CreateSets < ActiveRecord::Migration[5.1]
+class CreateMagicSet < ActiveRecord::Migration[5.1]
   def change
-    create_table :sets do |t|
+    create_table :magic_sets do |t|
       t.string :name
       t.string :code
       t.date :release_date
