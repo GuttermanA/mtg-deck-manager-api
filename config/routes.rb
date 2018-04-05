@@ -3,6 +3,7 @@ Rails.application.routes.draw do
   get '/cards/search', to: 'cards#search'
   post '/signup', to: 'users#create'
   resources :cards, only: [:show, :index]
+  resources :formats, only: [:index]
   resources :decks
   resources :users, only: [:update, :show]
   resources :collections

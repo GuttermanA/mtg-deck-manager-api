@@ -123,7 +123,7 @@ ActiveRecord::Schema.define(version: 20180404151446) do
     t.bigint "user_id"
     t.integer "total_cards"
     t.integer "mainboard"
-    t.string "sideboard"
+    t.integer "sideboard"
     t.boolean "tournament", default: false
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false

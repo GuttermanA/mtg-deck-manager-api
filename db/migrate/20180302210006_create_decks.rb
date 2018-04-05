@@ -9,7 +9,7 @@ class CreateDecks < ActiveRecord::Migration[5.1]
       t.belongs_to :user, index: true
       t.integer :total_cards
       t.integer :mainboard
-      t.string :sideboard
+      t.integer :sideboard
       t.boolean :tournament, default: false
       t.timestamps
     end
