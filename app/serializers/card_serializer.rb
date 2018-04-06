@@ -1,31 +1,16 @@
-class CardSerializer < ActiveModel::Serializer
-  attributes :name, :mana_cost, :cmc, :full_type, :rarity, :text, :flavor, :artist, :number, :power, :toughness, :loyalty, :img_url, :layout, :multiverse_id, :printings, :latest_set, :colors, :formats, :supertypes, :subtypes, :types
-
-  def printings
-    object.magic_sets
+class CardSerializer
+  include FastJsonapi::ObjectSerializer
+  attributes :id, :name, :mana_cost, :cmc, :full_type, :rarity, :text, :flavor, :artist, :number, :power, :toughness, :multiverse_id, :img_url
+  attribute :types do |object|
+    object.types.map {|t| t.name}
   end
 
-  def latest_set
-    object.magic_set
+  attribute :supertypes do |object|
+    object.supertypes.map {|t| t.name}
   end
 
-  def colors
-    object.colors
+  attribute :subtypes do |object|
+    object.subtypes.map {|t| t.name}
   end
 
-  def formats
-    object.formats
-  end
-
-  def supertypes
-    object.supertypes
-  end
-
-  def types
-    object.types
-  end
-
-  def subtypes
-    object.subtypes
-  end
 end

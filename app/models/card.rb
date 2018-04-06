@@ -16,8 +16,12 @@ class Card < ApplicationRecord
   validates :img_url, presence: true
   # joins is inner join
   # includes is left join
-  scope :colors, -> (args) { joins(:colors).where('colors.name': args).references(:colors) }
+  scope :colors, -> (colors) { joins(:colors).where('colors.name': colors).references(:colors) }
   scope :wildcard, -> (column, arg) { where("#{column} LIKE ?", "%#{arg}%")}
+
+  def mainboard_deck_card_count(deck_id)
+    self.deck_cards.find_by(deck_id: deck_id, sideboard: false).card_count
+  end
 
   def self.search(params)
     if params["name"]

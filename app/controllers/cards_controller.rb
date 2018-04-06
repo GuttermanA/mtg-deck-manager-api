@@ -2,7 +2,7 @@ class CardsController < ApplicationController
 
   def search
     @cards = Card.search(params[:card])
-    render json: @cards
+    render json: CardSerializer.new(@cards).serialized_json
   end
 
   def index

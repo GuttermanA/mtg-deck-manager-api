@@ -2,6 +2,7 @@ class DecksController < ApplicationController
 
   def create
     # ADD CREATOR AFTER AUTH
+
     @deck = Deck.new(
       name: params[:name],
       archtype: params[:archtype],
@@ -10,27 +11,30 @@ class DecksController < ApplicationController
       tournament: false
     )
 
-    @deck.save
-
-    params[:cards].each do |board, cards|
-      cards.each do |card|
+    if @deck.save
+      params[:cards].each do |board, cards|
         sideboard = board == "sideboard"
-        new_deck_card = DeckCard.new(
-          deck_id: @deck.id,
-          card_id: Card.find_by(name: card[:name]).id,
-          card_count: card[:number],
-          sideboard: sideboard
-        )
-        new_deck_card.save
+        cards.each do |card|
+          new_deck_card = DeckCard.new(
+            deck_id: @deck.id,
+            card_id: Card.find_by(name: card[:name]).id,
+            card_count: card[:number],
+            sideboard: sideboard
+          )
+          new_deck_card.save
+        end
       end
+    else
+      render json: {error: "Failed to create deck"}
     end
-
-
-    @deck.mainboard = DeckCard.where(deck_id: @deck.id, sideboard: false).sum(:card_count)
-    @deck.sideboard = DeckCard.where(deck_id: @deck.id, sideboard: true).sum(:card_count)
-    @deck.total_cards = @deck.mainboard + @deck.sideboard
+    @deck.card_count_calculator
     @deck.save
-    render json: @deck
+    render json: DeckSerializer.new(@deck).serialized_json
+  end
+
+  def show
+    @deck = Deck.find(params[:id])
+    render json: DeckSerializer.new(@deck).serialized_json
   end
 
 end
