@@ -1,5 +1,11 @@
 class DecksController < ApplicationController
 
+  def search
+
+    @decks = Deck.basic_search(params[:deck][:term])
+    render json: DeckSerializer.new(@decks).serialized_json
+  end
+
   def create
     # ADD CREATOR AFTER AUTH
 
