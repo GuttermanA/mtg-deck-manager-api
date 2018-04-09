@@ -13,7 +13,7 @@ class DecksController < ApplicationController
       name: params[:name],
       archtype: params[:archtype],
       format_id: Format.find_by(name:params[:format]),
-      user_id: 1,
+      user_id: params[:user],
       tournament: false
     )
 
