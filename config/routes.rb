@@ -4,6 +4,7 @@ Rails.application.routes.draw do
   post '/signup', to: 'users#create'
   post '/login', to: 'auth#create'
   get '/current_user', to: 'auth#show'
+  get '/deck_metadata_load', to: 'decks#metadata_load'
   resources :cards, only: [:show, :index]
   resources :formats, only: [:index]
   resources :decks

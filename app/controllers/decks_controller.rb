@@ -12,7 +12,7 @@ class DecksController < ApplicationController
     @deck = Deck.new(
       name: params[:name],
       archtype: params[:archtype],
-      format_id: Format.find_by(name:params[:format]),
+      format_id: Format.find_by(name:params[:format]).id,
       user_id: params[:user],
       tournament: false
     )
@@ -41,6 +41,12 @@ class DecksController < ApplicationController
   def show
     @deck = Deck.find(params[:id])
     render json: DeckSerializer.new(@deck).serialized_json
+  end
+
+  def metadata_load
+    @formats = Format.all
+    @archtypes = Deck.distinct.pluck(:archtype)
+    render json: {formats: @formats, archtypes: @archtypes}
   end
 
 end

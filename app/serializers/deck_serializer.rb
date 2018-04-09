@@ -7,6 +7,10 @@ class DeckSerializer
     {name: object.user.name, id: object.user.id}
   end
 
+  attribute :format do |object|
+    object.format.name
+  end
+
   attribute :mainboard_cards do |object|
     mainboard = object.deck_cards.select{|dc| !dc.sideboard}
     mainboard.map do |deck_card|

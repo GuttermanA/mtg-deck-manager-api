@@ -149,6 +149,8 @@ all_sets.each do |set|
   )
   new_set.save
 end
+
+Format.find_or_create_by{name: "Casual"}
 #
 # new_card = Card.new(
 #   name: card.names.length > 0 ? card.names.join(" // ") : card.name,
