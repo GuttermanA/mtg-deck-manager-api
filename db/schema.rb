@@ -166,10 +166,11 @@ ActiveRecord::Schema.define(version: 20180404151446) do
   end
 
   create_table "users", force: :cascade do |t|
-    t.string "name"
+    t.citext "name"
     t.string "password_digest"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
+    t.index ["name"], name: "index_users_on_name"
   end
 
 end

@@ -10,7 +10,7 @@ class CardsController < ApplicationController
   end
 
   def show
-
+    Card.joins(:supertypes, :subtypes, :types).select('types.*').where("cards.name LIKE ?", "%angel%")
   end
 
   # private

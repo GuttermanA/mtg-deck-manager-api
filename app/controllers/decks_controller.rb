@@ -7,14 +7,15 @@ class DecksController < ApplicationController
   end
 
   def create
-    # ADD CREATOR AFTER AUTH
+
+    byebug
 
     @deck = Deck.new(
       name: params[:name],
       archtype: params[:archtype],
       format_id: Format.find_by(name:params[:format]).id,
       user_id: params[:user],
-      tournament: false
+      tournament: params[:tournament]
     )
 
     if @deck.save

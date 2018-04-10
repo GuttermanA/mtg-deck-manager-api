@@ -135,7 +135,7 @@ avacyn = {
     }
 
 
-all_cards = MTG::Card.where(gameFormat: 'standard').all
+all_cards = MTG::Card.all
 all_sets = MTG::Set.all
 # card = MTG::Card.find(409741)
 
@@ -150,7 +150,7 @@ all_sets.each do |set|
   new_set.save
 end
 
-Format.find_or_create_by{name: "Casual"}
+Format.find_or_create_by(name: "Casual")
 #
 # new_card = Card.new(
 #   name: card.names.length > 0 ? card.names.join(" // ") : card.name,
@@ -252,13 +252,17 @@ all_cards.each do |card|
       new_card.magic_sets.push(MagicSet.find_by(code: printing))
     end
 
-    card.legalities.each do |legality|
-      legal = false
-      if legality.legality == 'Legal'
-        legal = true
+    if card.legalities
+      card.legalities.each do |legality|
+        legal = false
+        if legality.legality == 'Legal'
+          legal = true
+        end
+        CardFormat.create(card_id: new_card.id, format_id: Format.find_or_create_by(name: legality.format).id, legal: legal)
       end
-      CardFormat.create(card_id: new_card.id, format_id: Format.find_or_create_by(name: legality.format).id, legal: legal)
     end
+
+
 
     if card.colors
       card.colors.each do |color|
