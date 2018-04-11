@@ -18,4 +18,11 @@ class ApplicationController < ActionController::API
     request.headers["Authorization"]
   end
 
+  def metadata_load
+    @formats = Format.all
+    @archtypes = Deck.distinct.pluck(:archtype)
+    @sets = MagicSet.all
+    render json: {formats: @formats, archtypes: @archtypes, sets: @sets}
+  end
+
 end

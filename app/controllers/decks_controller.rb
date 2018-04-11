@@ -8,8 +8,6 @@ class DecksController < ApplicationController
 
   def create
 
-    byebug
-
     @deck = Deck.new(
       name: params[:name],
       archtype: params[:archtype],
@@ -44,10 +42,6 @@ class DecksController < ApplicationController
     render json: DeckSerializer.new(@deck).serialized_json
   end
 
-  def metadata_load
-    @formats = Format.all
-    @archtypes = Deck.distinct.pluck(:archtype)
-    render json: {formats: @formats, archtypes: @archtypes}
-  end
+  
 
 end
