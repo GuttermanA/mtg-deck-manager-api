@@ -3,9 +3,9 @@ class CollectionsController < ApplicationController
     byebug
     params[:cards].each do |card|
       collection_card = Collection.find_or_initialize_by(
-        user_id: params[:user],
+        user_id: decode_token["user_id"],
         card_id: Card.find_by(name: card[:name],
-        magic_set_id: MagicSet.find_by(name: card[:set]),
+        magic_set_id: MagicSet.find_by(code: card[:set]),
         condition: card[:condition],
         premium: card[:premium],
         wishlist: card[:wishlist]

@@ -18,6 +18,7 @@ class Card < ApplicationRecord
   # includes is left join
   scope :colors, -> (colors) { joins(:colors).where('colors.name': colors).references(:colors) }
   scope :wildcard, -> (column, arg) { where("#{column} LIKE ?", "%#{arg}%")}
+  scope :name_wildcard, -> (name) { where()}
 
   def mainboard_deck_card_count(deck_id)
     self.deck_cards.find_by(deck_id: deck_id, sideboard: false).card_count
@@ -67,6 +68,18 @@ class Card < ApplicationRecord
       users.id = ?
     SQL
     Card.find_by_sql [sql, user_id]
+  end
+
+  def self.validate_card_names(cards)
+
+    failed_card_keys = []
+    cards.each do |card|
+      found = !Card.find_by(name: card[:name])
+      if card[:name].length > 0 && !Card.find_by(name: card[:name])
+        failed_card_keys.push(card[:key])
+      end
+    end
+    failed_card_keys
   end
 
 

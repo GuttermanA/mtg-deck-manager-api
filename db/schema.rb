@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20180404151446) do
+ActiveRecord::Schema.define(version: 20180412182737) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -107,7 +107,7 @@ ActiveRecord::Schema.define(version: 20180404151446) do
   create_table "deck_cards", force: :cascade do |t|
     t.integer "deck_id"
     t.bigint "card_id"
-    t.integer "card_count"
+    t.integer "card_count", default: 1
     t.boolean "sideboard", default: false
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
@@ -145,6 +145,7 @@ ActiveRecord::Schema.define(version: 20180404151446) do
     t.string "block"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
+    t.index ["code"], name: "index_magic_sets_on_code"
   end
 
   create_table "subtypes", force: :cascade do |t|
