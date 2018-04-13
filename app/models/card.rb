@@ -33,8 +33,6 @@ class Card < ApplicationRecord
   def self.get_collection_cards_by_user(user_id)
     sql = <<-SQL
       SELECT
-      users.name,
-      users.id,
       cards.name,
       cards.mana_cost,
       cards.cmc,
@@ -55,17 +53,15 @@ class Card < ApplicationRecord
       collections.condition,
       collections.wishlist,
       collections.updated_at,
-      magic_sets.name,
-      magic_sets.code
+      magic_sets.name AS set_name,
+      magic_sets.code AS set_code
       FROM cards
       INNER JOIN collections ON
       cards.id = collections.card_id
-      INNER JOIN users ON
-      users.id = collections.user_id
       INNER JOIN magic_sets ON
       magic_sets.id = collections.magic_set_id
       WHERE
-      users.id = ?
+      collections.user_id = ?
     SQL
     Card.find_by_sql [sql, user_id]
   end

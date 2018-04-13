@@ -12,21 +12,11 @@ class DeckSerializer
   end
 
   attribute :mainboard_cards do |object|
-    mainboard = object.deck_cards.select{|dc| !dc.sideboard}
-    mainboard.map do |deck_card|
-      card = deck_card.card.attributes
-      card[:count] = deck_card.card_count
-      card
-    end
+    DeckCardSerializer.new(DeckCard.get_deck_cards_by_deck_and_board( object.id, false)).serializable_hash
   end
 
   attribute :sideboard_cards do |object|
-    sideboard = object.deck_cards.select{|dc| dc.sideboard}
-    sideboard.map do |deck_card|
-      card = deck_card.card.attributes
-      card[:count] = deck_card.card_count
-      card
-    end
+    DeckCardSerializer.new(DeckCard.get_deck_cards_by_deck_and_board(object.id, true)).serializable_hash
   end
 
 end

@@ -21,8 +21,6 @@ class DecksController < ApplicationController
         tournament: params[:tournament]
       )
 
-      byebug
-
       if @deck.save
 
         params[:cards].each do |board, cards|
@@ -45,8 +43,6 @@ class DecksController < ApplicationController
 
       render json: DeckSerializer.new(@deck).serialized_json
     end
-
-
   end
 
   def show

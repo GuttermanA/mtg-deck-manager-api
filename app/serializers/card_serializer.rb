@@ -1,5 +1,6 @@
 class CardSerializer
   include FastJsonapi::ObjectSerializer
+  set_key_transform :camel_lower
   attributes :id, :name, :mana_cost, :cmc, :full_type, :rarity, :text, :flavor, :artist, :number, :power, :toughness, :multiverse_id, :img_url
 
   # attribute :types do |object|
@@ -13,5 +14,9 @@ class CardSerializer
   # attribute :subtypes do |object|
   #   object.subtypes.map {|t| t.name}
   # end
+
+  attribute :last_printing do |object|
+    object.magic_set.code
+  end
 
 end

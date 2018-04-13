@@ -8,6 +8,6 @@ class UserSerializer
   end
 
   attribute :collection do |object|
-    object.collection
+    CollectionCardSerializer.new(Card.get_collection_cards_by_user(object.id)).serializable_hash
   end
 end
