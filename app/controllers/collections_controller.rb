@@ -13,7 +13,8 @@ class CollectionsController < ApplicationController
       collection_card.count = !collection_card.id ? card[:number] : collection_card.count + card[:number]
       collection_card.save
     end
-
-    render json: Card.get_collection_cards_by_user(decode_token["user_id"])
+    #
+    # render json: Card.get_collection_cards_by_user(decode_token["user_id"])
+    render json: CollectionSerializer.new(Collection.where(user_id: decode_token["user_id"]), include: [:card])
   end
 end

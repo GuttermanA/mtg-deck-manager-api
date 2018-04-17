@@ -11,7 +11,7 @@ class ApplicationController < ActionController::API
   def current_user
     decoded_hash = decode_token
     user = User.find(decoded_hash["user_id"])
-    UserSerializer.new(user).serialized_json
+    UserSerializer.new(user).serializable_hash
   end
 
   def get_token

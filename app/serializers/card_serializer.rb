@@ -16,7 +16,11 @@ class CardSerializer
   # end
 
   attribute :last_printing do |object|
-    object.magic_set.code
+    object.magic_set.name
+  end
+
+  attribute :primary_type do |object|
+    object.types[0].name
   end
 
 end

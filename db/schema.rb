@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20180412182737) do
+ActiveRecord::Schema.define(version: 20180417165200) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -43,6 +43,7 @@ ActiveRecord::Schema.define(version: 20180412182737) do
     t.integer "multiverse_id"
     t.string "layout"
     t.bigint "magic_set_id"
+    t.string "primary_type"
     t.index ["full_type"], name: "index_cards_on_full_type"
     t.index ["magic_set_id"], name: "index_cards_on_magic_set_id"
     t.index ["name"], name: "index_cards_on_name"

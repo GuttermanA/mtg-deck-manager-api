@@ -6,6 +6,11 @@ class DecksController < ApplicationController
     render json: DeckSerializer.new(@decks).serialized_json
   end
 
+  def show
+    @deck = Deck.find(params[:id])
+    render json: DeckSerializer.new(@deck).serialized_json
+  end
+
   def create
     card_errors =  {mainboard:  Card.validate_card_names(params[:cards][:mainboard])}
     sideboard_errors = Card.validate_card_names(params[:cards][:sideboard])
@@ -26,13 +31,15 @@ class DecksController < ApplicationController
         params[:cards].each do |board, cards|
           sideboard = board == "sideboard"
           cards.each do |card|
-            new_deck_card = DeckCard.new(
-              deck_id: @deck.id,
-              card_id: Card.find_by(name: card[:name]).id,
-              card_count: card[:number] == nil ? card[:number] : 1,
-              sideboard: sideboard
-            )
-            new_deck_card.save
+            if cards.name.length > 0
+              new_deck_card = DeckCard.new(
+                deck_id: @deck.id,
+                card_id: Card.find_by(name: card[:name]).id,
+                card_count: card[:number] == nil ? card[:number] : 1,
+                sideboard: sideboard
+              )
+              new_deck_card.save
+            end
           end
         end
       else
@@ -45,10 +52,7 @@ class DecksController < ApplicationController
     end
   end
 
-  def show
-    @deck = Deck.find(params[:id])
-    render json: DeckSerializer.new(@deck).serialized_json
-  end
+
 
 
 

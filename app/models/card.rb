@@ -1,6 +1,6 @@
 class Card < ApplicationRecord
   belongs_to :magic_set
-
+  has_many :collections
   has_many :deck_cards
   has_many :decks, through: :deck_cards
   has_many :card_formats
@@ -33,6 +33,7 @@ class Card < ApplicationRecord
   def self.get_collection_cards_by_user(user_id)
     sql = <<-SQL
       SELECT
+      collections.id,
       cards.name,
       cards.mana_cost,
       cards.cmc,
@@ -64,6 +65,7 @@ class Card < ApplicationRecord
       collections.user_id = ?
     SQL
     Card.find_by_sql [sql, user_id]
+    # Card.joins(:magic_sets, :collections).where('collections.user_id': 1).references(:collections)
   end
 
   def self.validate_card_names(cards)

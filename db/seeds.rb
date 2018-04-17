@@ -240,7 +240,28 @@ all_cards.each do |card|
       card.types.each do |type|
         new_card.types.push(Type.find_or_create_by(name: type))
       end
+      new_card_types = new_card.types.map { |t| t.name }
+      if new_card_types.include?("Creature")
+        new_card.primary_type = "Creature"
+      else
+        new_card.primary_type = new_card_types.first
+      end
+      new_card.sa
     end
+
+    Card.all.each do |card|
+      if card.types
+        card_types = card.types.map { |t| t.name }
+        if card_types.include?("Creature")
+          card.primary_type = "Creature"
+        else
+          card.primary_type = card_types.first
+        end
+        card.save
+      end
+    end
+
+
 
     if card.subtypes
       card.subtypes.each do |subtype|

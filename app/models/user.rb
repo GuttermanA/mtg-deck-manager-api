@@ -1,5 +1,5 @@
 class User < ApplicationRecord
-  has_one :collection
+  has_many :collections
   has_many :decks
   validates :name, presence: true
   validates :password, presence: true
