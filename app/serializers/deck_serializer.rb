@@ -1,7 +1,7 @@
 class DeckSerializer
   include FastJsonapi::ObjectSerializer
   set_key_transform :camel_lower
-  attributes :id, :name, :creator, :archtype, :total_cards, :mainboard, :sideboard, :tournament, :created_at, :updated_at
+  attributes :id, :name, :creator, :archtype, :total_cards, :total_mainboard, :total_sideboard, :tournament, :created_at, :updated_at
   # has_many :deck_cards
   attribute :user do |object|
     {name: object.user.name, id: object.user.id}

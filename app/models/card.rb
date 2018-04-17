@@ -25,8 +25,8 @@ class Card < ApplicationRecord
   end
 
   def self.search(params)
-    if params["name"]
-      Card.wildcard("name", params["name"])
+    if params[:name]
+      Card.wildcard("name", params[:name]).limit(50)
     end
   end
 

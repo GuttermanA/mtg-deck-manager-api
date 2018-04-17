@@ -1,7 +1,6 @@
 class DecksController < ApplicationController
 
   def search
-
     @decks = Deck.basic_search(params[:deck][:term])
     render json: DeckSerializer.new(@decks).serialized_json
   end
@@ -31,13 +30,14 @@ class DecksController < ApplicationController
         params[:cards].each do |board, cards|
           sideboard = board == "sideboard"
           cards.each do |card|
-            if cards.name.length > 0
+            if card[:name].length > 0
               new_deck_card = DeckCard.new(
                 deck_id: @deck.id,
                 card_id: Card.find_by(name: card[:name]).id,
-                card_count: card[:number] == nil ? card[:number] : 1,
+                card_count: card[:number] == nil ?  1 : card[:number],
                 sideboard: sideboard
               )
+              byebug
               new_deck_card.save
             end
           end
@@ -52,8 +52,13 @@ class DecksController < ApplicationController
     end
   end
 
-
-
-
+  def destroy
+    @deck = Deck.find(params[:id])
+    if @deck.destroy
+      render json: {message: "#{@deck.name} deleted"}
+    else
+      render json: {error: {message:"Something went wrong"}}
+    end
+  end
 
 end
