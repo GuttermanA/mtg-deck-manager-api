@@ -34,7 +34,7 @@ class DecksController < ApplicationController
               new_deck_card = DeckCard.new(
                 deck_id: @deck.id,
                 card_id: Card.find_by(name: card[:name]).id,
-                card_count: card[:number] == nil ?  1 : card[:number],
+                card_count: card[:count] == nil ?  1 : card[:count],
                 sideboard: sideboard
               )
               new_deck_card.save

@@ -1,4 +1,6 @@
 Rails.application.routes.draw do
+  patch '/decks/:deck_id/deck_cards', to: 'deck_cards#update'
+  delete '/decks/:deck_id/deck_cards', to: 'deck_cards#destroy'
   get '/cards/search', to: 'cards#search'
   get '/decks/search', to: 'decks#search'
   post '/signup', to: 'users#create'
@@ -10,4 +12,5 @@ Rails.application.routes.draw do
   resources :decks
   resources :users, only: [:update, :create, :show]
   resources :collections
+
 end
