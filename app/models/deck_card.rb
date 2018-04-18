@@ -42,7 +42,7 @@ class DeckCard < ApplicationRecord
     deck_cards = DeckCard.select(
       'deck_cards.id',
       # 'deck_cards.deck_id',
-      'deck_cards.card_count',
+      'deck_cards.card_count AS count',
       'deck_cards.sideboard',
       'deck_cards.card_id',
       'cards.name',

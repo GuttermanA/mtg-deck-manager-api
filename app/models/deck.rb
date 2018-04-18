@@ -8,6 +8,8 @@ class Deck < ApplicationRecord
 
   scope :basic_search, -> (term) { where("name LIKE ? OR archtype LIKE ?", "%#{term}%", "%#{term}%")}
 
+  before_save :card_count_calculator
+
 
   def card_count_calculator
     self.total_mainboard = DeckCard.where(deck_id: self.id, sideboard: false).sum(:card_count)

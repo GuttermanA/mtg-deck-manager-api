@@ -37,7 +37,6 @@ class DecksController < ApplicationController
                 card_count: card[:number] == nil ?  1 : card[:number],
                 sideboard: sideboard
               )
-              byebug
               new_deck_card.save
             end
           end
@@ -45,7 +44,6 @@ class DecksController < ApplicationController
       else
         render json: {error: "Failed to create deck"}
       end
-      @deck.card_count_calculator
       @deck.save
 
       render json: DeckSerializer.new(@deck).serialized_json

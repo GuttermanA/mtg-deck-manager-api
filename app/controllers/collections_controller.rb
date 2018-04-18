@@ -5,7 +5,7 @@ class CollectionsController < ApplicationController
         collection_card = Collection.find_or_initialize_by(
           user_id: decode_token["user_id"],
           card_id: Card.find_by(name: card[:name]).id,
-          magic_set_id: MagicSet.find_by(code: card[:set]).id,
+          magic_set_id: MagicSet.find_by(code: card[:setCode]).id,
           condition: card[:condition],
           premium: card[:premium],
           wishlist: card[:wishlist]
