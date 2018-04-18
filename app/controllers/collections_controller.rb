@@ -9,12 +9,12 @@ class CollectionsController < ApplicationController
         premium: card[:premium],
         wishlist: card[:wishlist]
       )
-          byebug
       collection_card.count = !collection_card.id ? card[:number] : collection_card.count + card[:number]
+      byebug
       collection_card.save
     end
     #
     # render json: Card.get_collection_cards_by_user(decode_token["user_id"])
-    render json: CollectionSerializer.new(Collection.where(user_id: decode_token["user_id"]), include: [:card])
+    render json: CollectionCardSerializer.new(Card.get_collection_cards_by_user(decode_token["user_id"])).serializable_hash
   end
 end

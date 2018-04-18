@@ -3,7 +3,7 @@ class Collection < ApplicationRecord
   belongs_to :card
   belongs_to :magic_set
   # validates :user_id, uniqueness: true
-  before_create :unique_collection_card
+  # before_create :unique_collection_card
 
   def unique_collection_card
     !!!Collection.find_by(
