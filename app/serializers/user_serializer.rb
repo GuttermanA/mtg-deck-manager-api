@@ -2,7 +2,7 @@ class UserSerializer
   include FastJsonapi::ObjectSerializer
   set_key_transform :camel_lower
   attributes :id, :name
-
+  cache_options enabled: true, cache_length: 12.hours
   # has_many :decks
   # has_many :collections
 
