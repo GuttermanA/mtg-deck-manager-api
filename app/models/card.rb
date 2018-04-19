@@ -17,7 +17,7 @@ class Card < ApplicationRecord
   # joins is inner join
   # includes is left join
   scope :colors, -> (colors) { joins(:colors).where('colors.name': colors).references(:colors) }
-  scope :wildcard, -> (column, arg) { where("#{column} LIKE ?", "%#{arg}%")}
+  scope :wildcard, -> (column, arg) { joins(:card_formats, :formats).distinct('cards.name').where("(#{column} LIKE ? OR cards.full_type LIKE ?) AND formats.name = 'Standard'  AND card_formats.legal = TRUE", "%#{arg}%", "%#{arg}%").references(:card_formats, :formats)}
   scope :name_wildcard, -> (name) { where()}
 
   def mainboard_deck_card_count(deck_id)
@@ -26,7 +26,7 @@ class Card < ApplicationRecord
 
   def self.search(params)
     if params[:name]
-      Card.wildcard("name", params[:name]).limit(50)
+      @cards = Card.wildcard("cards.name", params[:name]).limit(50)
     end
   end
 
