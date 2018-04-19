@@ -22,7 +22,16 @@ class ApplicationController < ActionController::API
     @formats = Format.all
     @archtypes = Deck.distinct.pluck(:archtype)
     @sets = MagicSet.all
-    render json: {formats: @formats, archtypes: @archtypes, sets: @sets}
+
+    card_of_the_day = Rails.cache.fetch('card_of_the_day', expires_in: 24.hours) do
+      CardSerializer.new(Card.order("RANDOM()").first)
+    end
+
+    deck_of_the_day = Rails.cache.fetch('deck_of_the_day', expires_in: 24.hours) do
+      DeckSerializer.new(Deck.order("RANDOM()").first)
+    end
+    
+    render json: {formats: @formats, archtypes: @archtypes, sets: @sets, card_of_the_day: card_of_the_day, deck_of_the_day: deck_of_the_day}
   end
 
 end
