@@ -11,7 +11,6 @@ class CollectionsController < ApplicationController
           wishlist: card[:wishlist]
         )
         collection_card.count = !collection_card.id ? card[:number] : collection_card.count + card[:number]
-        byebug
         collection_card.save
       end
     end

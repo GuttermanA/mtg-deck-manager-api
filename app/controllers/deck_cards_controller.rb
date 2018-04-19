@@ -17,12 +17,14 @@ class DeckCardsController < ApplicationController
         ids_to_destroy = params[:cardsToDelete].map {|c| c[:id]}
         DeckCard.where(id: ids_to_destroy).destroy_all
       end
-      
-      render json: DeckSerializer.new(Deck.find(params[:deck_id])).serialized_json
+      @deck = Deck.find(params[:deck_id])
+      @deck.card_count_calculator
+      @deck.save
+      render json: DeckSerializer.new(@deck).serialized_json
     end
   end
 
   def destroy
-    byebug
+
   end
 end
