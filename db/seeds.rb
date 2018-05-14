@@ -246,7 +246,7 @@ all_cards.each do |card|
       else
         new_card.primary_type = new_card_types.first
       end
-      new_card.sa
+      new_card.save
     end
 
     Card.all.each do |card|
@@ -260,8 +260,6 @@ all_cards.each do |card|
         card.save
       end
     end
-
-
 
     if card.subtypes
       card.subtypes.each do |subtype|
@@ -282,8 +280,6 @@ all_cards.each do |card|
         CardFormat.create(card_id: new_card.id, format_id: Format.find_or_create_by(name: legality.format).id, legal: legal)
       end
     end
-
-
 
     if card.colors
       card.colors.each do |color|
