@@ -1,9 +1,9 @@
 #GETS DECK FROM MTG mtgtop8 AND PARSES INTO AN OBJECT
 
-def self.parse_deck
+def self.parse_deck(href)
   raw = RestClient::Request.execute(
              method: :get,
-             url: 'http://mtgtop8.com/mtgo?d=318178&f=Modern_Humans_by_Luca_Magni'
+             url: "http://mtgtop8.com/#{href}"
            )
 
    main = raw.to_s.split("Sideboard")[0].split("\r\n")

@@ -1,8 +1,13 @@
 class DecksController < ApplicationController
 
   def search
-    @decks = Deck.basic_search(params[:deck][:term])
-    render json: DeckSerializer.new(@decks).serialized_json
+    if params[:deck] == nil
+      @decks = Deck.order(created_at: :desc).limit(50)
+      render json: DeckSerializer.new(@decks).serialized_json
+    else
+      @decks = Deck.basic_search(params[:deck][:term])
+      render json: DeckSerializer.new(@decks).serialized_json
+    end
   end
 
   def show
@@ -44,6 +49,7 @@ class DecksController < ApplicationController
       else
         render json: {error: "Failed to create deck"}
       end
+
       @deck.save
 
       render json: DeckSerializer.new(@deck).serialized_json

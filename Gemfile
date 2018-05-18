@@ -19,7 +19,6 @@ gem 'puma', '~> 3.7'
 # gem 'redis', '~> 4.0'
 # Use ActiveModel has_secure_password
 gem 'bcrypt', '~> 3.1.7'
-gem 'derailed', group: :development
 # Use Capistrano for deployment
 # gem 'capistrano-rails', group: :development
 
@@ -30,6 +29,8 @@ gem 'figaro'
 
 gem 'mtg_sdk'
 gem 'fast_jsonapi'
+gem 'mechanize'
+gem 'rest-client'
 
 group :development, :test do
   # Call 'byebug' anywhere in the code to stop execution and get a debugger console

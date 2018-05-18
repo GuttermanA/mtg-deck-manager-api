@@ -1,6 +1,6 @@
-all_cards = MTG::Card.all
+# all_cards = MTG::Card.all
 all_sets = MTG::Set.all
-
+all_cards = MTG::Card.where(name: 'Dominaria').all
 
 all_sets.each do |set|
   new_set = MagicSet.new(
@@ -68,6 +68,7 @@ all_cards.each do |card|
     end
 
     if card.legalities
+      CardFormat.create(card_id: new_card.id, format_id: Format.find_or_create_by(name: "Standard").id, legal: true)
       card.legalities.each do |legality|
         legal = false
         if legality.legality == 'Legal'
@@ -76,6 +77,8 @@ all_cards.each do |card|
         CardFormat.create(card_id: new_card.id, format_id: Format.find_or_create_by(name: legality.format).id, legal: legal)
       end
     end
+
+
 
     if card.colors
       card.colors.each do |color|
