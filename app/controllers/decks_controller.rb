@@ -1,13 +1,12 @@
 class DecksController < ApplicationController
 
   def search
-    if params[:deck] == nil
+    if !params[:deck]
       @decks = Deck.order(created_at: :desc).limit(50)
-      render json: DeckSerializer.new(@decks).serialized_json
     else
-      @decks = Deck.basic_search(params[:deck][:term])
-      render json: DeckSerializer.new(@decks).serialized_json
+      @decks = Deck.basic_wildcard(params[:deck][:term])
     end
+    render json: DeckSerializer.new(@decks).serialized_json
   end
 
   def show

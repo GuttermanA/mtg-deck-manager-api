@@ -6,7 +6,7 @@ class Deck < ApplicationRecord
 
   validates :name, :format, presence: true
 
-  scope :basic_search, -> (term) { where("name LIKE ? OR archtype LIKE ?", "%#{term}%", "%#{term}%")}
+  scope :basic_wildcard, -> (term) { where("name LIKE ? OR archtype LIKE ?", "%#{term}%", "%#{term}%")}
 
   before_save :card_count_calculator
 

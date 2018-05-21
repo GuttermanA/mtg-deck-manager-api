@@ -18,16 +18,32 @@ class Card < ApplicationRecord
   # includes is left join
   scope :colors, -> (colors) { joins(:colors).where('colors.name': colors).references(:colors) }
   scope :wildcard, -> (column, arg) { joins(:card_formats, :formats).distinct('cards.name').where("(#{column} LIKE ? OR cards.full_type LIKE ?)", "%#{arg}%", "%#{arg}%").references(:card_formats, :formats)}
-  scope :name_wildcard, -> (name) { where()}
+  scope :basic_wildcard, -> (arg) { joins(:card_formats, :formats).distinct('cards.name').where("(cards.name LIKE ? OR cards.full_type LIKE ?)", "%#{arg}%", "%#{arg}%").references(:card_formats, :formats)}
 
   def mainboard_deck_card_count(deck_id)
     self.deck_cards.find_by(deck_id: deck_id, sideboard: false).card_count
   end
 
   def self.search(params)
-    if params[:name]
-      @cards = Card.wildcard("cards.name", params[:name]).limit(50)
+
+    if params[:term]
+      @cards = Card.basic_wildcard(params[:term]).limit(50)
     end
+    @cards
+  end
+
+  def self.default_search
+    most_recent_set = MagicSet.order(release_date: :desc).limit(1)[0].id
+    sql = <<-SQL
+      SELECT
+        cards.*
+        magic_set.code AS set_code
+      FROM cards
+      INNER JOIN magic_sets ON
+      ON cards.magic_set_id = magic_sets.id
+      WHERE cards.magic_set_id = ?
+    SQL
+    Card.find_by_sql [sql, most_recent_set]
   end
 
   def self.get_collection_cards_by_user(user_id)
