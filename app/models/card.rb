@@ -36,12 +36,13 @@ class Card < ApplicationRecord
     most_recent_set = MagicSet.order(release_date: :desc).limit(1)[0].id
     sql = <<-SQL
       SELECT
-        cards.*
-        magic_set.code AS set_code
+        cards.*,
+        magic_sets.code AS set_code
       FROM cards
       INNER JOIN magic_sets ON
-      ON cards.magic_set_id = magic_sets.id
+      cards.magic_set_id = magic_sets.id
       WHERE cards.magic_set_id = ?
+      ORDER BY cards.name ASC
     SQL
     Card.find_by_sql [sql, most_recent_set]
   end

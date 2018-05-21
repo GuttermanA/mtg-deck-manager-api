@@ -26,7 +26,7 @@ class ApplicationController < ActionController::API
 
   def cache_deck_of_the_day
     Rails.cache.fetch("deck_of_the_day", expires_in: 24.hours) do
-      DeckSerializer.new(Deck.order("RANDOM()").first)
+      Deck.order("RANDOM()").first
     end
   end
 
@@ -34,12 +34,10 @@ class ApplicationController < ActionController::API
     @formats = Format.all
     @archtypes = Deck.distinct.pluck(:archtype)
     @sets = MagicSet.all
+    @card_of_the_day = CardSerializer.new(cache_card_of_the_day)
+    @deck_of_the_day = DeckSerializer.new(cache_deck_of_the_day)
 
-    card_of_the_day = cache_card_of_the_day
-
-    deck_of_the_day = cache_deck_of_the_day
-
-    render json: {formats: @formats, archtypes: @archtypes, sets: @sets, card_of_the_day: CardSerializer.new(card_of_the_day), deck_of_the_day: DeckSerializer.new(deck_of_the_day)}
+    render json: {formats: @formats, archtypes: @archtypes, sets: @sets, card_of_the_day: @card_of_the_day, deck_of_the_day: @deck_of_the_day}
   end
 
 end

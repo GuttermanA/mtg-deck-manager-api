@@ -3,13 +3,10 @@ class CardsController < ApplicationController
   def search
     if params[:card][:term]
       if params[:card][:term] == ''
-        # most_recent_set = MagicSet.order(release_date: :desc).limit(1)[0].id
         @cards = Card.default_search
-        # @cards = Card.order('magic_set.release_date').joins(:magic_set).references(:magic_set)
       else
-        # @cards = Card.search(params[:card])
+        @cards = Card.search(params[:card])
       end
-      # @cards = MagicSet.order(release_date: :desc).limit(1)[0].cards
     else
 
     end
