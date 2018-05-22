@@ -10,8 +10,8 @@ class ApplicationController < ActionController::API
 
   def current_user
     decoded_hash = decode_token
-    user = User.find(decoded_hash["user_id"])
-    UserSerializer.new(user).serializable_hash
+    @user = User.find(decoded_hash["user_id"])
+    UserSerializer.new(@user).serializable_hash
   end
 
   def get_token
@@ -26,7 +26,7 @@ class ApplicationController < ActionController::API
 
   def cache_deck_of_the_day
     Rails.cache.fetch("deck_of_the_day", expires_in: 24.hours) do
-      Deck.order("RANDOM()").first
+      Deck.order("RANDOM()").joins(:format, :user).select('decks.*, formats.name AS format_name, users.name AS user_name').references(:format, :user).first
     end
   end
 
@@ -36,7 +36,6 @@ class ApplicationController < ActionController::API
     @sets = MagicSet.all
     @card_of_the_day = CardSerializer.new(cache_card_of_the_day)
     @deck_of_the_day = DeckSerializer.new(cache_deck_of_the_day)
-
     render json: {formats: @formats, archtypes: @archtypes, sets: @sets, card_of_the_day: @card_of_the_day, deck_of_the_day: @deck_of_the_day}
   end
 

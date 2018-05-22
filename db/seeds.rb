@@ -1,6 +1,11 @@
-# all_cards = MTG::Card.all
+User.create(name: "admin", password: "1234", admin: true)
+
+all_cards = MTG::Card.all
+puts "Fetching all cards..."
 all_sets = MTG::Set.all
-all_cards = MTG::Card.where(name: 'Dominaria').all
+puts "Fetch all sets..."
+formats = ['Standard', 'Modern', 'Legacy', 'Vintage', 'Commander']
+# all_cards = MTG::Card.where(name: 'Dominaria').all
 
 all_sets.each do |set|
   new_set = MagicSet.new(
@@ -33,7 +38,7 @@ all_cards.each do |card|
     img_url: card.image_url,
     multiverse_id: card.multiverse_id,
     layout: card.layout,
-    magic_set_id: MagicSet.find_by(code: card.set).id
+    last_printing: card.set
   )
   if new_card.save
     puts "Created card: #{new_card.name}"
@@ -68,17 +73,18 @@ all_cards.each do |card|
     end
 
     if card.legalities
-      CardFormat.create(card_id: new_card.id, format_id: Format.find_or_create_by(name: "Standard").id, legal: true)
+      # CardFormat.create(card_id: new_card.id, format_id: Format.find_or_create_by(name: "Standard").id, legal: true)
+      CardFormat.create(card_id: new_card.id, format_id: Format.find_or_create_by(name: "Casual").id, legal: true)
       card.legalities.each do |legality|
-        legal = false
-        if legality.legality == 'Legal'
-          legal = true
+        if formats.include?(legality.format)
+          legal = false
+          if legality.legality == 'Legal'
+            legal = true
+          end
+          CardFormat.find_or_create_by(card_id: new_card.id, format_id: Format.find_or_create_by(name: legality.format).id, legal: legal)
         end
-        CardFormat.create(card_id: new_card.id, format_id: Format.find_or_create_by(name: legality.format).id, legal: legal)
       end
     end
-
-
 
     if card.colors
       card.colors.each do |color|
@@ -91,6 +97,14 @@ all_cards.each do |card|
   end
 end
 
+# Update Dominaria legalities
+Card.where(last_printing: "DOM").each do |c|
+  formats.each do |format|
+    CardFormat.find_or_create_by(card_id: c.id, format_id: Format.find_or_create_by(name: format).id, legal: true)
+  end
+end
+puts "Added missing legalities to Dominaria cards"
+
 puts "Success!"
 puts "Cards created: #{Card.all.size}"
 puts "Supertypes created: #{Supertype.all.size}"
@@ -98,3 +112,9 @@ puts "Types created: #{Type.all.size}"
 puts "Subtypes created: #{Subtype.all.size}"
 puts "Sets created: #{MagicSet.all.size}"
 puts "Formats created: #{Format.all.size}"
+
+puts "Scraping decks from front page of mtgtop8.com"
+
+Deck.mtgtop8_scrape_homepage_decks
+
+puts "Done! #{Deck.all.size} decks added to database."

@@ -6,7 +6,7 @@ class Deck < ApplicationRecord
 
   validates :name, :format, presence: true
 
-  scope :basic_wildcard, -> (term) { where("name LIKE ? OR archtype LIKE ?", "%#{term}%", "%#{term}%")}
+  # scope :basic_wildcard, -> (term) { order(created_at: :desc).joins(:format, :user).where("name LIKE ? OR archtype LIKE ?", "%#{term}%", "%#{term}%")}
 
   before_save :card_count_calculator
 
@@ -15,6 +15,24 @@ class Deck < ApplicationRecord
     self.total_mainboard = DeckCard.where(deck_id: self.id, sideboard: false).sum(:card_count)
     self.total_sideboard = DeckCard.where(deck_id: self.id, sideboard: true).sum(:card_count)
     self.total_cards = self.total_mainboard + self.total_sideboard
+  end
+
+  def self.basic_wildcard(term, user_id = nil)
+    if user_id
+      Deck.order(created_at: :desc).joins(:format, :user).where("decks.name LIKE ? OR decks.archtype LIKE ?", "%#{term}%", "%#{term}%").select('decks.*, formats.name AS format_name, users.name AS user_name').references(:format, :user).limit(50)
+    else
+      Deck.order(created_at: :desc).joins(:format, :user).where("(decks.name LIKE ? OR decks.archtype LIKE ?) AND decks.user_id <> ?", "%#{term}%", "%#{term}%", user_id).select('decks.*, formats.name AS format_name, users.name AS user_name').references(:format, :user).limit(50)
+    end
+
+  end
+
+  def self.default_search(user_id = nil)
+    if user_id
+      Deck.order(created_at: :desc).joins(:format, :user).where("decks.user_id <> ?").select('decks.*, formats.name AS format_name, users.name AS user_name').references(:format, :user).limit(50)
+    else
+      Deck.order(created_at: :desc).joins(:format, :user).select('decks.*, formats.name AS format_name, users.name AS user_name').references(:format, :user).limit(50)
+    end
+
   end
 
   def self.mtgtop8_scrape_homepage_decks
@@ -46,9 +64,9 @@ class Deck < ApplicationRecord
 
     deck_array.each do |e|
       if  /SB/ =~ e[0,2]
-        deck["cards"]["sideboard"][e[/(?<=\] ).+/]] = e.delete("^0-9")
+        deck["cards"]["sideboard"][e[/(?<=\] ).+/]] = e[/\d+?(?= \[)/]
       elsif /\d/ =~ e.first
-        deck["cards"]["mainboard"][e[/(?<=\] ).+/]] = e.delete("^0-9")
+        deck["cards"]["mainboard"][e[/(?<=\] ).+/]] = e[/\d+?(?= \[)/]
       else
         deck[e[/^[^\ :]*/].downcase] = e[/(?<=: ).+/]
       end

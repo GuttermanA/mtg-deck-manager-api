@@ -1,16 +1,18 @@
 class DecksController < ApplicationController
 
   def search
-    if !params[:deck]
-      @decks = Deck.order(created_at: :desc).limit(50)
-    else
-      @decks = Deck.basic_wildcard(params[:deck][:term])
+    if params[:deck][:term]
+      if params[:deck][:term] == ''
+        @decks = Deck.default_search
+      else
+        @decks = Deck.basic_wildcard(params[:deck][:term])
+      end
     end
     render json: DeckSerializer.new(@decks).serialized_json
   end
 
   def show
-    @deck = Deck.find(params[:id])
+    @deck = Deck.joins(:format, :user).where(id: params[:id]).select('decks.*, formats.name AS format_name, users.name AS user_name').references(:format, :user)[0]
     render json: DeckSerializer.new(@deck).serialized_json
   end
 
@@ -24,10 +26,13 @@ class DecksController < ApplicationController
       @deck = Deck.new(
         name: params[:name],
         archtype: params[:archtype],
-        format_id: Format.find_by(name: params[:format]).id,
+        format_id: Format.find_by(name: params[:formatName]).id,
         user_id: decode_token["user_id"],
-        tournament: params[:tournament]
+        tournament: params[:tournament],
+        creator: params[:creator]
       )
+
+      byebug
 
       if @deck.save
 
@@ -49,7 +54,8 @@ class DecksController < ApplicationController
         render json: {error: "Failed to create deck"}
       end
 
-      @deck.save
+
+      @deck = Deck.joins(:format, :user).where(id: @deck.save).select('decks.*, formats.name AS format_name, users.name AS user_name').references(:format, :user)[0]
 
       render json: DeckSerializer.new(@deck).serialized_json
     end

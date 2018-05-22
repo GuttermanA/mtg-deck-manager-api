@@ -2,12 +2,12 @@ class UserSerializer
   include FastJsonapi::ObjectSerializer
   set_key_transform :camel_lower
   attributes :id, :name
-  cache_options enabled: true, cache_length: 12.hours
+  # cache_options enabled: true, cache_length: 12.hours
   # has_many :decks
   # has_many :collections
 
   attribute :decks do |object|
-    DeckSerializer.new(object.decks).serializable_hash
+    DeckSerializer.new(Deck.joins(:format, :user).where(user_id: object.id).select('decks.*, formats.name AS format_name, users.name AS user_name').references(:format, :user)).serializable_hash
   end
 
   attribute :collection do |object|

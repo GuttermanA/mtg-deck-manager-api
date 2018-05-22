@@ -1,5 +1,5 @@
 class Card < ApplicationRecord
-  belongs_to :magic_set
+  # belongs_to :magic_set
   has_many :collections
   has_many :deck_cards
   has_many :decks, through: :deck_cards
@@ -16,35 +16,42 @@ class Card < ApplicationRecord
   validates :img_url, presence: true
   # joins is inner join
   # includes is left join
+  scope :default_search, -> {}
   scope :colors, -> (colors) { joins(:colors).where('colors.name': colors).references(:colors) }
-  scope :wildcard, -> (column, arg) { joins(:card_formats, :formats).distinct('cards.name').where("(#{column} LIKE ? OR cards.full_type LIKE ?)", "%#{arg}%", "%#{arg}%").references(:card_formats, :formats)}
-  scope :basic_wildcard, -> (arg) { joins(:card_formats, :formats).distinct('cards.name').where("(cards.name LIKE ? OR cards.full_type LIKE ?)", "%#{arg}%", "%#{arg}%").references(:card_formats, :formats)}
+  scope :wildcard, -> (column, arg) { where("(#{column} LIKE ?", "%#{arg}%")}
+  scope :basic_wildcard, -> (arg) { where("cards.name LIKE ? OR cards.full_type LIKE ?", "%#{arg}%", "%#{arg}%")}
 
   def mainboard_deck_card_count(deck_id)
     self.deck_cards.find_by(deck_id: deck_id, sideboard: false).card_count
   end
 
   def self.search(params)
-
     if params[:term]
-      @cards = Card.basic_wildcard(params[:term]).limit(50)
+      @cards = Card.basic_wildcard(params[:term])
     end
     @cards
   end
 
+  # def self.basic_wildcard(arg)
+  #   sql = <<-SQL
+  #     SELECT
+  #       cards.*,
+  #       magic_sets.code AS set_code
+  #     FROM cards
+  #     INNER JOIN magic_sets ON
+  #     cards.magic_set_id = magic_sets.id
+  #     WHERE
+  #     cards.name LIKE ?
+  #     OR cards.full_type LIKE ?
+  #     ORDER BY cards.name ASC
+  #     LIMIT 50
+  #   SQL
+  #   Card.find_by_sql [sql, "%#{arg}%", "%#{arg}%"]
+  # end
+
   def self.default_search
-    most_recent_set = MagicSet.order(release_date: :desc).limit(1)[0].id
-    sql = <<-SQL
-      SELECT
-        cards.*,
-        magic_sets.code AS set_code
-      FROM cards
-      INNER JOIN magic_sets ON
-      cards.magic_set_id = magic_sets.id
-      WHERE cards.magic_set_id = ?
-      ORDER BY cards.name ASC
-    SQL
-    Card.find_by_sql [sql, most_recent_set]
+    most_recent_set = MagicSet.order(release_date: :desc).limit(1)[0].code
+    Card.order(name: :asc).where(last_printing: most_recent_set).limit(50)
   end
 
   def self.get_collection_cards_by_user(user_id)

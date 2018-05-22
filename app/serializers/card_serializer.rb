@@ -2,8 +2,7 @@ class CardSerializer
   include FastJsonapi::ObjectSerializer
   set_key_transform :camel_lower
   cache_options enabled: true, cache_length: 12.hours
-  attributes :id, :name, :mana_cost, :cmc, :full_type, :rarity, :text, :flavor, :artist, :number, :power, :toughness, :multiverse_id, :img_url, :primary_type
-  # ,:set_code
+  attributes :id, :name, :mana_cost, :cmc, :full_type, :rarity, :text, :flavor, :artist, :number, :power, :toughness, :multiverse_id, :img_url, :primary_type,:last_printing
 
   # attribute :types do |object|
   #   object.types.map {|t| t.name}
