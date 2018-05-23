@@ -9,6 +9,7 @@ class DeckCard < ApplicationRecord
   end
 
   def self.get_deck_cards_by_deck(deck_id)
+    # OLD VERSION
     # sql = <<-SQL
     #   SELECT
     #     deck_cards.id,
@@ -78,6 +79,31 @@ class DeckCard < ApplicationRecord
       end
     end
     cards
+
+    #NEW VERSION
+    # DeckCard.select(
+    #   'deck_cards.id',
+    #   # 'deck_cards.deck_id',
+    #   'deck_cards.card_count AS count',
+    #   'deck_cards.sideboard',
+    #   'deck_cards.card_id',
+    #   'cards.name',
+    #   'cards.mana_cost',
+    #   'cards.cmc',
+    #   'cards.full_type',
+    #   'cards.rarity',
+    #   'cards.text',
+    #   'cards.flavor',
+    #   'cards.artist',
+    #   'cards.number',
+    #   'cards.power',
+    #   'cards.toughness',
+    #   'cards.loyalty',
+    #   'cards.multiverse_id',
+    #   'cards.img_url',
+    #   'cards.primary_type'
+    # ).joins(:card).where(deck_id: deck_id).references(:card, :types)
+
   end
 
 

@@ -23,7 +23,6 @@ class Deck < ApplicationRecord
     else
       Deck.order(created_at: :desc).joins(:format, :user).where("(decks.name LIKE ? OR decks.archtype LIKE ?) AND decks.user_id <> ?", "%#{term}%", "%#{term}%", user_id).select('decks.*, formats.name AS format_name, users.name AS user_name').references(:format, :user).limit(50)
     end
-
   end
 
   def self.default_search(user_id = nil)
@@ -32,7 +31,10 @@ class Deck < ApplicationRecord
     else
       Deck.order(created_at: :desc).joins(:format, :user).select('decks.*, formats.name AS format_name, users.name AS user_name').references(:format, :user).limit(50)
     end
+  end
 
+  def self.by_id(deck_id)
+    Deck.joins(:format, :user).where(id: deck_id).select('decks.*, formats.name AS format_name, users.name AS user_name').references(:format, :user)[0]
   end
 
   def self.mtgtop8_scrape_homepage_decks

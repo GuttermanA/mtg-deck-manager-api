@@ -23,8 +23,4 @@ class DeckCardsController < ApplicationController
       render json: DeckSerializer.new(@deck).serialized_json
     end
   end
-
-  def destroy
-
-  end
 end

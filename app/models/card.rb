@@ -19,7 +19,7 @@ class Card < ApplicationRecord
   scope :default_search, -> {}
   scope :colors, -> (colors) { joins(:colors).where('colors.name': colors).references(:colors) }
   scope :wildcard, -> (column, arg) { where("(#{column} LIKE ?", "%#{arg}%")}
-  scope :basic_wildcard, -> (arg) { where("cards.name LIKE ? OR cards.full_type LIKE ?", "%#{arg}%", "%#{arg}%")}
+  scope :basic_wildcard, -> (arg) { where("(cards.name LIKE ? OR cards.full_type LIKE ?) AND cards.last_printing NOT IN ('UNH', 'UGL', 'UST')", "%#{arg}%", "%#{arg}%")}
 
   def mainboard_deck_card_count(deck_id)
     self.deck_cards.find_by(deck_id: deck_id, sideboard: false).card_count
