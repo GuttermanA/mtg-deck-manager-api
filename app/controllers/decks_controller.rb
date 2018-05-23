@@ -32,8 +32,6 @@ class DecksController < ApplicationController
         creator: params[:creator]
       )
 
-      byebug
-
       if @deck.save
 
         params[:cards].each do |board, cards|
@@ -50,12 +48,13 @@ class DecksController < ApplicationController
             end
           end
         end
+        @deck.save
       else
         render json: {error: "Failed to create deck"}
       end
 
 
-      @deck = Deck.joins(:format, :user).where(id: @deck.save).select('decks.*, formats.name AS format_name, users.name AS user_name').references(:format, :user)[0]
+      @deck = Deck.joins(:format, :user).where(id: @deck.id).select('decks.*, formats.name AS format_name, users.name AS user_name').references(:format, :user)[0]
 
       render json: DeckSerializer.new(@deck).serialized_json
     end
