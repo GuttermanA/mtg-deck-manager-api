@@ -10,7 +10,7 @@ class CollectionsController < ApplicationController
           premium: card[:premium],
           wishlist: card[:wishlist]
         )
-        collection_card.count = !collection_card.id ? card[:number] : collection_card.count + card[:number]
+        collection_card.count = card[:count]
         collection_card.save
       end
     end
