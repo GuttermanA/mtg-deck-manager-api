@@ -7,12 +7,8 @@ class DeckSerializer
   #   {name: object.user.name, id: object.user.id}
   # end
 
-  # attribute :format do |object|
-  #   object.format.name
-  # end
-
   attribute :cards do |object|
-    DeckCard.get_deck_cards_by_deck(object.id)
+    DeckCard.get_deck_cards_by_deck(object.id).as_json
   end
 
   # attribute :mainboard_cards do |object|
