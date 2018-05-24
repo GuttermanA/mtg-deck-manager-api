@@ -2,7 +2,7 @@ class DecksController < ApplicationController
 
   def search
     if params[:deck][:term]
-      if params[:deck][:term] == ''
+      if params[:deck][:term] == 'default'
         @decks = Deck.default_search
       else
         @decks = Deck.basic_wildcard(params[:deck][:term])
@@ -17,10 +17,8 @@ class DecksController < ApplicationController
   end
 
   def create
-    card_errors =  {mainboard:  Card.validate_card_names(params[:cards][:mainboard])}
-    sideboard_errors = Card.validate_card_names(params[:cards][:sideboard])
-    sideboard_errors ? card_errors[:sideboard] = sideboard_errors : nil
-    if card_errors.values.flatten.length > 0
+    card_errors =  Card.validate_card_names(params[:cards])
+    if card_errors.length > 0
       render json: {error: {message:"Some card names are incorrect", keys: card_errors}}
     else
       @deck = Deck.new(

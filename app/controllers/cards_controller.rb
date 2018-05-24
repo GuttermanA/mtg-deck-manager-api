@@ -2,7 +2,7 @@ class CardsController < ApplicationController
 
   def search
     if params[:card][:term]
-      if params[:card][:term] == ''
+      if params[:card][:term] == 'default'
         @cards = Card.default_search
       else
         @cards = Card.search(params[:card])
