@@ -17,37 +17,42 @@ class DecksController < ApplicationController
   end
 
   def create
-    byebug
-    card_errors =  Card.validate_card_names(params[:cards])
-    if card_errors.length > 0
-      render json: {error: {message:"Some card names are incorrect", keys: card_errors}}
-    else
-      @deck = Deck.new(
-        name: params[:name].titleize,
-        archtype: params[:archtype],
-        format_id: Format.find_by(name: params[:format]).id,
-        user_id: decode_token["user_id"],
-        tournament: params[:tournament],
-        creator: params[:creator]
-      )
-
-      if @deck.save
-
-        params[:cards].each do |card|
-          new_deck_card = DeckCard.new(
-            deck_id: @deck.id,
-            card_id: Card.find_by(name: card[:info][:name]).id,
-            card_count: card[:info][:count] == '' ?  1 : card[:info][:count],
-            sideboard: card[:sideboard]
-          )
-          new_deck_card.save
-        end
-        @deck.save
-        @deck = Deck.joins(:format, :user).where(id: @deck.id).select('decks.*, formats.name AS format_name, users.name AS user_name').references(:format, :user)[0]
-        render json: DeckSerializer.new(@deck).serialized_json
-      else
-        render json: {message: "Failed to create deck", error: @deck.errors}
+    if !params[:copy]
+      card_errors =  Card.validate_card_names(params[:cards])
+      if card_errors.length > 0
+        render json: {error: {message:"Some card names are incorrect", keys: card_errors}}
       end
+    end
+
+    @deck = Deck.new(
+      name: params[:name].titleize,
+      archtype: params[:archtype],
+      format_id: Format.find_by(name: params[:formatName]).id,
+      user_id: decode_token["user_id"],
+      tournament: params[:tournament],
+      creator: params[:creator]
+    )
+
+    if @deck.save
+
+
+
+      params[:cards].each do |card|
+
+        card_info = card[:info] ? card[:info] : card
+        new_deck_card = DeckCard.new(
+          deck_id: @deck.id,
+          card_id: Card.find_by(name: card_info[:name]).id,
+          card_count: card_info[:count],
+          sideboard: card[:sideboard]
+        )
+        new_deck_card.save
+      end
+      @deck.save
+      @deck = Deck.joins(:format, :user).where(id: @deck.id).select('decks.*, formats.name AS format_name, users.name AS user_name').references(:format, :user)[0]
+      render json: DeckSerializer.new(@deck).serialized_json
+    else
+      render json: {message: "Failed to create deck", error: @deck.errors}
     end
   end
 
