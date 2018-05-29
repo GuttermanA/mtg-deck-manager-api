@@ -17,10 +17,14 @@ class DecksController < ApplicationController
   end
 
   def create
+    if params[:cards].length == 0
+      render json: {error: {message:"Deck submitted with no cards"}} and return
+    end
+
     if !params[:copy]
       card_errors =  Card.validate_card_names(params[:cards])
       if card_errors.length > 0
-        render json: {error: {message:"Some card names are incorrect", keys: card_errors}}
+        render json: {error: {message:"Some card names are incorrect", keys: card_errors}} and return
       end
     end
 
@@ -34,23 +38,18 @@ class DecksController < ApplicationController
     )
 
     if @deck.save
-
-
-
       params[:cards].each do |card|
-
-        card_info = card[:info] ? card[:info] : card
         new_deck_card = DeckCard.new(
           deck_id: @deck.id,
-          card_id: Card.find_by(name: card_info[:name]).id,
-          card_count: card_info[:count],
+          card_id: card[:card_id] || Card.find_by(name: card[:name]).id,
+          card_count: card[:count] == '' ?  1 : card[:count],
           sideboard: card[:sideboard]
         )
         new_deck_card.save
       end
       @deck.save
       @deck = Deck.joins(:format, :user).where(id: @deck.id).select('decks.*, formats.name AS format_name, users.name AS user_name').references(:format, :user)[0]
-      render json: DeckSerializer.new(@deck).serialized_json
+      render json: DeckSerializer.new(@deck).serialized_json and return
     else
       render json: {message: "Failed to create deck", error: @deck.errors}
     end
@@ -59,12 +58,17 @@ class DecksController < ApplicationController
   def update
     if decode_token["user_id"]
       if params[:cardsToUpdate].length > 0
-        params[:cardsToUpdate].each do |card|
-          if card.has_key?("id")
-            @deck_card = DeckCard.find_by(id: card[:id], sideboard: card[:sideboard], deck_id: params[:deck_id])
-            @deck_card.update(card_count: card[:count])
+        params[:cardsToUpdate].each do |deck_card|
+          if deck_card.has_key?("id")
+            @deck_card = DeckCard.find(deck_card[:id])
+            @deck_card.update(card_count: deck_card[:count])
           else
-            @deck_card = DeckCard.new(deck_id: params[:deck_id], sideboard: card[:sideboard], card_count: card[:count] == nil ?  1 : card[:count], card_id: Card.find_by(name: card[:name]).id)
+            @deck_card = DeckCard.new(
+              deck_id: params[:deck_id],
+              sideboard: deck_card[:sideboard],
+              card_count: deck_card[:count] == '' ?  1 : deck_card[:count],
+              card_id: Card.find_by(name: deck_card[:name]).id
+            )
             @deck_card.save
           end
         end
