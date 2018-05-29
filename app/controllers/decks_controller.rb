@@ -59,17 +59,17 @@ class DecksController < ApplicationController
   def update
     if decode_token["user_id"]
       if params[:cardsToUpdate].length > 0
-        params[:cardsToUpdate].each do |card|
-          if card.has_key?("id")
+        params[:cardsToUpdate].each do |deck_card|
+          if deck_card.has_key?("id")
             byebug
-            @deck_card = DeckCard.find_by(card_id: card[:id], sideboard: card[:sideboard], deck_id: params[:deck_id])
-            @deck_card.update(card_count: card[:count])
+            @deck_card = DeckCard.find(deck_card[:id])
+            @deck_card.update(card_count: deck_card[:count])
           else
             @deck_card = DeckCard.new(
               deck_id: params[:deck_id],
-              sideboard: card[:sideboard],
-              card_count: card[:count] == '' ?  1 : card[:count],
-              card_id: Card.find_by(name: card[:name]).id
+              sideboard: deck_card[:sideboard],
+              card_count: deck_card[:count] == '' ?  1 : deck_card[:count],
+              card_id: Card.find_by(name: deck_card[:name]).id
             )
             @deck_card.save
           end
