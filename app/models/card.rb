@@ -95,7 +95,6 @@ class Card < ApplicationRecord
   def self.validate_card_names(cards)
     failed_card_keys = []
     cards.each do |card|
-      byebug
       # card_info = card[:info]
       # found = Card.find_by(name: card_info[:name])
       # if card[:name].length > 0 && !Card.find_by(name: card[:name])

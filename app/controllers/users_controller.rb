@@ -1,6 +1,5 @@
 class UsersController < ApplicationController
   def create
-    byebug
     @user = User.new(name: params[:username], password: params[:password])
     if @user.save
       jwt = issue_token({user_id: @user.id})

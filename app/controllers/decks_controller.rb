@@ -39,10 +39,9 @@ class DecksController < ApplicationController
 
     if @deck.save
       params[:cards].each do |card|
-        byebug
         new_deck_card = DeckCard.new(
           deck_id: @deck.id,
-          card_id: card[:id] || Card.find_by(name: card[:name]).id,
+          card_id: card[:card_id] || Card.find_by(name: card[:name]).id,
           card_count: card[:count] == '' ?  1 : card[:count],
           sideboard: card[:sideboard]
         )
@@ -61,7 +60,6 @@ class DecksController < ApplicationController
       if params[:cardsToUpdate].length > 0
         params[:cardsToUpdate].each do |deck_card|
           if deck_card.has_key?("id")
-            byebug
             @deck_card = DeckCard.find(deck_card[:id])
             @deck_card.update(card_count: deck_card[:count])
           else
