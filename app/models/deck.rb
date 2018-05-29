@@ -78,7 +78,7 @@ class Deck < ApplicationRecord
      name: deck["name"],
      format_id: Format.find_by(name: deck["format"]).id,
      user_id: User.find_by(name: "admin").id,
-     creator: deck["creator"],
+     creator: deck["creator"].gsub('_', ' '),
      tournament: true
     )
     if @deck.save
@@ -88,10 +88,11 @@ class Deck < ApplicationRecord
         sideboard = board == "sideboard"
         cards.each do |name, count|
           puts name
+          card = Card.where("cards.name = ? AND cards.last_printing NOT IN ('UNH', 'UGL', 'UST')", name).first || Card.where("name LIKE ?", "#{name}%").first
           @new_deck_card = DeckCard.new(
             deck_id: @deck.id,
             # card_id: Card.wildcard("cards.name", name)[0].id,
-            card_id: Card.where("name LIKE ?", "%#{name}%")[0].id,
+            card_id: card.id,
             card_count: count == nil ?  1 : count,
             sideboard: sideboard
           )

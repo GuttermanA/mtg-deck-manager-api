@@ -8,6 +8,8 @@ class DeckCard < ApplicationRecord
     !!!DeckCard.find_by(card_id: self.card_id, deck_id: self.deck_id, sideboard: self.sideboard)
   end
 
+
+
   def self.get_deck_cards_by_deck(deck_id)
     # OLD VERSION
     # sql = <<-SQL
@@ -102,6 +104,7 @@ class DeckCard < ApplicationRecord
       'cards.img_url',
       'cards.primary_type'
     ).joins(:card).where(deck_id: deck_id).references(:card)
+
 
   end
 
