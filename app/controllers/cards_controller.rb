@@ -14,14 +14,6 @@ class CardsController < ApplicationController
     render json: CardSerializer.new(@cards).serialized_json
   end
 
-  def index
-
-  end
-
-  def show
-    Card.joins(:supertypes, :subtypes, :types).select('types.*').where("cards.name LIKE ?", "%angel%")
-  end
-
   private
 
   def card_params

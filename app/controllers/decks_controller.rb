@@ -57,8 +57,6 @@ class DecksController < ApplicationController
 
   def update
     if decode_token["user_id"]
-
-      # DeckCard.destroy_all(deck_id: params[:id])
       original_deck_cards = DeckCard.where(deck_id: params[:id])
       new_deck_cards = params[:cards]
       ids_to_destroy = original_deck_cards.map{|c| c[:id]} - new_deck_cards.map{|c| c[:id]}.compact
@@ -86,31 +84,6 @@ class DecksController < ApplicationController
 
       @deck = Deck.by_id(params[:id])
       @deck.save
-      # if params[:cardsToUpdate].length > 0
-      #   params[:cardsToUpdate].each do |deck_card|
-      #     if deck_card.has_key?("id")
-      #       @deck_card = DeckCard.find(deck_card[:id])
-      #       @deck_card.update(card_count: deck_card[:count])
-      #     else
-      #       byebug
-      #       @deck_card = DeckCard.new(
-      #         deck_id: params[:deck_id],
-      #         sideboard: deck_card[:sideboard],
-      #         card_count: deck_card[:count] == '' ?  1 : deck_card[:count],
-      #         card_id: Card.find_by(name: deck_card[:name]).id
-      #       )
-      #       @deck_card.save
-      #     end
-      #   end
-      # end
-      #
-      # if params[:cardsToDelete].length > 0
-      #   ids_to_destroy = params[:cardsToDelete].map {|c| c[:id]}
-      #   DeckCard.where(id: ids_to_destroy).destroy_all
-      # end
-      # @deck = Deck.by_id(params[:id])
-      # @deck.card_count_calculator
-      # @deck.save
       render json: DeckSerializer.new(@deck).serialized_json
     end
   end
