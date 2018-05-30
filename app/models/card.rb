@@ -19,7 +19,7 @@ class Card < ApplicationRecord
   scope :default_search, -> {}
   scope :colors, -> (colors) { joins(:colors).where('colors.name': colors).references(:colors) }
   scope :wildcard, -> (column, arg) { where("(#{column} LIKE ?", "%#{arg}%")}
-  scope :basic_wildcard, -> (arg) { order(name: :asc).where("(cards.name LIKE ? OR cards.full_type LIKE ?) AND cards.last_printing NOT IN ('UNH', 'UGL', 'UST') AND cards.layout NOT IN ('token', 'scheme')", "%#{arg}%", "%#{arg}%").limit(100)}
+  scope :basic_wildcard, -> (arg) { order(name: :asc).where("(cards.name LIKE ? OR cards.full_type LIKE ?) AND cards.last_printing NOT IN ('UNH', 'UGL', 'UST', 'VAN') AND cards.layout NOT IN ('token', 'scheme')", "%#{arg}%", "%#{arg}%").limit(100)}
 
   def mainboard_deck_card_count(deck_id)
     self.deck_cards.find_by(deck_id: deck_id, sideboard: false).card_count
@@ -93,7 +93,6 @@ class Card < ApplicationRecord
   end
 
   def self.validate_card_names(cards)
-    byebug
     failed_card_keys = []
     cards.each do |card|
       # card_info = card[:info]
