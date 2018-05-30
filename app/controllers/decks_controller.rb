@@ -57,30 +57,60 @@ class DecksController < ApplicationController
 
   def update
     if decode_token["user_id"]
-      if params[:cardsToUpdate].length > 0
-        params[:cardsToUpdate].each do |deck_card|
-          if deck_card.has_key?("id")
-            @deck_card = DeckCard.find(deck_card[:id])
-            @deck_card.update(card_count: deck_card[:count])
-          else
-            @deck_card = DeckCard.new(
-              deck_id: params[:deck_id],
-              sideboard: deck_card[:sideboard],
-              card_count: deck_card[:count] == '' ?  1 : deck_card[:count],
-              card_id: Card.find_by(name: deck_card[:name]).id
-            )
-            @deck_card.save
-          end
+
+      # DeckCard.destroy_all(deck_id: params[:id])
+      original_deck_cards = DeckCard.where(deck_id: params[:id])
+      new_deck_cards = params[:cards]
+      ids_to_destroy = original_deck_cards.map{|c| c[:id]} - new_deck_cards.map{|c| c[:id]}.compact
+      deck_cards_to_delete =
+      deck_cards_to_add = new_deck_cards.select{|c| c[:id] == nil}
+      if ids_to_destroy.length > 0
+        DeckCard.where(id: ids_to_destroy).destroy_all
+      end
+
+      if deck_cards_to_add.length > 0
+        card_errors =  Card.validate_card_names(deck_cards_to_add)
+        if card_errors.length > 0
+          render json: {error: {message:"Some card names are incorrect", keys: card_errors}} and return
+        end
+        deck_cards_to_add.each do |c|
+          @deck_card = DeckCard.new(
+                  deck_id: params[:id],
+                  sideboard: c[:sideboard],
+                  card_count: c[:count] == '' ?  1 : c[:count],
+                  card_id: Card.find_by(name: c[:name]).id
+                )
+          @deck_card.save
         end
       end
 
-      if params[:cardsToDelete].length > 0
-        ids_to_destroy = params[:cardsToDelete].map {|c| c[:id]}
-        DeckCard.where(id: ids_to_destroy).destroy_all
-      end
       @deck = Deck.by_id(params[:id])
-      @deck.card_count_calculator
       @deck.save
+      # if params[:cardsToUpdate].length > 0
+      #   params[:cardsToUpdate].each do |deck_card|
+      #     if deck_card.has_key?("id")
+      #       @deck_card = DeckCard.find(deck_card[:id])
+      #       @deck_card.update(card_count: deck_card[:count])
+      #     else
+      #       byebug
+      #       @deck_card = DeckCard.new(
+      #         deck_id: params[:deck_id],
+      #         sideboard: deck_card[:sideboard],
+      #         card_count: deck_card[:count] == '' ?  1 : deck_card[:count],
+      #         card_id: Card.find_by(name: deck_card[:name]).id
+      #       )
+      #       @deck_card.save
+      #     end
+      #   end
+      # end
+      #
+      # if params[:cardsToDelete].length > 0
+      #   ids_to_destroy = params[:cardsToDelete].map {|c| c[:id]}
+      #   DeckCard.where(id: ids_to_destroy).destroy_all
+      # end
+      # @deck = Deck.by_id(params[:id])
+      # @deck.card_count_calculator
+      # @deck.save
       render json: DeckSerializer.new(@deck).serialized_json
     end
   end
@@ -88,7 +118,7 @@ class DecksController < ApplicationController
   def destroy
     @deck = Deck.find(params[:id])
     if @deck.destroy
-      render json: {message: "#{@deck.name} deleted"}
+      render json: {message: "#{@deck.name} deleted", user: current_user}
     else
       render json: {message:"Something went wrong"}
     end
