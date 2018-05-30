@@ -13,15 +13,11 @@ While this Rails app is built for my frontend, it has a fully functioning card d
 
 All deck and collection features require an account with a valid JWT token to use.
 
-The information presented in this API about Magic: The Gathering, both literal and graphical, is copyrighted by Wizards of the Coast. This API is not produced, endorsed, supported, or affiliated with Wizards of the Coast.
-
 #### Demo
 
 <a href="http://www.youtube.com/watch?feature=player_embedded&v=KreN1TQNLKM
 " target="_blank"><img src="http://img.youtube.com/vi/KreN1TQNLKM/0.jpg" 
 alt="IMAGE ALT TEXT HERE" width="240" height="180" border="10" /></a>
-
-
 
 ## API Routes
 
@@ -167,3 +163,5 @@ git push origin my-new-feature
 ## License
 
 MIT © 2018 Alexander Gutterman
+
+The information presented in this API about Magic: The Gathering, both literal and graphical, is copyrighted by Wizards of the Coast. This API is not produced, endorsed, supported, or affiliated with Wizards of the Coast.
