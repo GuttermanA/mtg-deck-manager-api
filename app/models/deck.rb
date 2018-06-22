@@ -3,7 +3,7 @@ class Deck < ApplicationRecord
   belongs_to :format
   has_many :deck_cards, dependent: :delete_all
   has_many :cards, through: :deck_cards
-  belongs_to :event
+  belongs_to :event, required: false
   validates :name, :format, presence: true
 
   # scope :basic_wildcard, -> (term) { order(created_at: :desc).joins(:format, :user).where("name LIKE ? OR archtype LIKE ?", "%#{term}%", "%#{term}%")}
@@ -48,9 +48,19 @@ class Deck < ApplicationRecord
 
     results_links.each do |l|
       tournament_result = l.click
+      doc = tournament_result.parser
+      #event_info is a td element with a class of S14. After retrieval, the rest of the steps are to parse out extraneous chars.
+      event_info = doc.css('td.S14').inner_text.strip.gsub(/[\r\n\t]/, " ").split("  ")[0].gsub("players - ","")
+
+      @event = Event.find_or_create_by(name: tournament_result.title[/[^@]+/].strip)
+
+      @event.add_attributes_from_string(event_info)
       download = tournament_result.links.find_all { |l| l.href.include? 'dec?' }
       puts download[0].href
-      Deck.parse_deck(download[0].href)
+      @deck = Deck.parse_deck(download[0].href)
+      @deck.event = @event
+      @deck.save!
+
     end
 
   end
@@ -73,15 +83,15 @@ class Deck < ApplicationRecord
         deck[e[/^[^\ :]*/].downcase] = e[/(?<=: ).+/]
       end
     end
-
+    byebug
     @deck = Deck.new(
      name: deck["name"],
-     format_id: Format.find_by(name: deck["format"]).id,
+     format_id: Format.find_or_create_by(name: deck["format"]).id,
      user_id: User.find_by(name: "admin").id,
      creator: deck["creator"].gsub('_', ' '),
      tournament: true
     )
-    if @deck.save
+    if @deck.save!
 
       deck["cards"].each do |board, cards|
 
@@ -96,16 +106,17 @@ class Deck < ApplicationRecord
             card_count: count == nil ?  1 : count,
             sideboard: sideboard
           )
-          @new_deck_card.save
+          @new_deck_card.save!
         end
       end
     else
-
+      puts "Deck failed to save"
     end
 
-    @deck.save
+    @deck.save!
 
     puts deck
+    @deck
   end
 
 end

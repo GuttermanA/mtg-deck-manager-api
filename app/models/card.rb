@@ -145,21 +145,23 @@ class Card < ApplicationRecord
           if legality.legality == 'Legal'
             legal = true
           end
-          CardFormat.find_or_create_by(card_id: self.id, format_id: Format.find_or_create_by(name: legality.format).id, legal: legal)
+          CardFormat.find_or_create_by(card_id: self.id, format_id: Format.find_by(name: legality.format).id, legal: legal)
         end
       end
     end
   end
 
   def add_printings(card_data)
-    card_data.printings.each do |printing|
-      self.magic_sets.push(MagicSet.find_or_create_by(printing))
+    if card_data.printings
+      card_data.printings.each do |printing|
+        self.magic_sets.push(MagicSet.find_by(code: printing))
+      end
     end
   end
 
   def add_color(card_data)
     card_data.colors.each do |color|
-      self.colors.push(Color.find_or_create_by(name: color))
+      self.colors.push(Color.find_by(name: color))
     end
   end
 

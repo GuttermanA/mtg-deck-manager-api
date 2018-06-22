@@ -129,7 +129,6 @@ ActiveRecord::Schema.define(version: 20180622162704) do
     t.datetime "updated_at", null: false
     t.integer "event_id"
     t.index ["archtype"], name: "index_decks_on_archtype"
-    t.index ["event_id"], name: "index_decks_on_event_id"
     t.index ["format_id"], name: "index_decks_on_format_id"
     t.index ["user_id"], name: "index_decks_on_user_id"
   end

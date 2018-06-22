@@ -4,7 +4,7 @@ all_cards = MTG::Card.all
 puts "Fetching all cards..."
 all_sets = MTG::Set.all
 puts "Fetch all sets..."
-formats = ['Standard', 'Modern', 'Legacy', 'Vintage', 'Commander']
+formats = ['Standard', 'Modern', 'Legacy', 'Vintage', 'Commander', 'Duel Commander']
 # all_cards = MTG::Card.where(name: 'Dominaria').all
 
 all_sets.each do |set|
