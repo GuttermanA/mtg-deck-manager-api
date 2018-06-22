@@ -105,5 +105,150 @@ class Card < ApplicationRecord
     failed_card_keys
   end
 
+  def add_types(card_data)
+    if card_data.types
+      card_data.types.each do |type|
+        self.types.push(Type.find_or_create_by(name: type))
+      end
+      new_card_types = self.types.map { |t| t.name }
+      if new_card_types.include?("Creature")
+        self.primary_type = "Creature"
+      else
+        self.primary_type = new_card_types.first
+      end
+      self.save
+    end
+  end
+
+  def add_subtypes(card_data)
+    if card_data.subtypes
+      card_data.subtypes.each do |subtype|
+        self.subtypes.push(Subtype.find_or_create_by(name: subtype))
+      end
+    end
+  end
+
+  def add_supertypes(card_data)
+    if card_data.supertypes
+      card_data.supertypes.each do |supertype|
+        self.supertypes.push(Supertype.find_or_create_by(name: supertype))
+      end
+    end
+  end
+
+  def add_legalities(card_data)
+    CardFormat.create(card_id: self.id, format_id: Format.find_or_create_by(name: "Casual").id, legal: true)
+    if card_data.legalities
+      card_data.legalities.each do |legality|
+        if formats.include?(legality.format)
+          legal = false
+          if legality.legality == 'Legal'
+            legal = true
+          end
+          CardFormat.find_or_create_by(card_id: self.id, format_id: Format.find_or_create_by(name: legality.format).id, legal: legal)
+        end
+      end
+    end
+  end
+
+  def add_printings(card_data)
+    card_data.printings.each do |printing|
+      self.magic_sets.push(MagicSet.find_or_create_by(printing))
+    end
+  end
+
+  def add_color(card_data)
+    card_data.colors.each do |color|
+      self.colors.push(Color.find_or_create_by(name: color))
+    end
+  end
+
+  def self.seed(new_cards_dataset)
+    counter = 0
+    new_cards_dataset.each do |card_data|
+      new_card = Card.new(
+        name: card_data.names && card_data.names.length > 0 ? card_data.names.join(" // ") : card_data.name,
+        mana_cost: card_data.mana_cost,
+        cmc: card_data.cmc,
+        full_type: card_data.type,
+        rarity: card_data.rarity,
+        text: card_data.text,
+        flavor: card_data.flavor,
+        artist: card_data.artist,
+        number: card_data.number,
+        power: card_data.power,
+        toughness: card_data.toughness,
+        loyalty: card_data.loyalty,
+        img_url: card_data.image_url,
+        multiverse_id: card_data.multiverse_id,
+        layout: card_data.layout,
+        last_printing: card_data.set
+      )
+
+      if new_card.save
+        counter += 1
+        puts "Created card: #{new_card.name}"
+
+        new_card.add_supertypes(card_data)
+        new_card.add_types(card_data)
+        new_card.add_subtypes(card_data)
+        new_card.add_printings(card_data)
+        new_card.add_legalities(card_data)
+
+        # if card_data.supertypes
+        #   card_data.supertypes.each do |supertype|
+        #     new_card.supertypes.push(Supertype.find_or_create_by(name: supertype))
+        #   end
+        # end
+
+        # if card_data.types
+          # card.types.each do |type|
+          #   new_card.types.push(Type.find_or_create_by(name: type))
+          # end
+          # new_card_types = new_card.types.map { |t| t.name }
+          # if new_card_types.include?("Creature")
+          #   new_card.primary_type = "Creature"
+          # else
+          #   new_card.primary_type = new_card_types.first
+          # end
+          # new_card.save
+        # end
+
+        # if card_data.subtypes
+          # card.subtypes.each do |subtype|
+          #   new_card.subtypes.push(Subtype.find_or_create_by(name: subtype))
+          # end
+        # end
+
+        # card.printings.each do |printing|
+        #   new_card.magic_sets.push(MagicSet.find_by(code: printing))
+        # end
+
+        # if card_data.legalities
+          # CardFormat.create(card_id: new_card.id, format_id: Format.find_or_create_by(name: "Casual").id, legal: true)
+          # card.legalities.each do |legality|
+          #   if formats.include?(legality.format)
+          #     legal = false
+          #     if legality.legality == 'Legal'
+          #       legal = true
+          #     end
+          #     CardFormat.find_or_create_by(card_id: new_card.id, format_id: Format.find_or_create_by(name: legality.format).id, legal: legal)
+          #   end
+          # end
+        # end
+
+        # if card.colors
+        #   card.colors.each do |color|
+        #     new_card.colors.push(Color.find_or_create_by(name: color))
+        #   end
+        # end
+
+      else
+        puts "Failed to create #{new_card.name}. Errors: #{new_card.errors.full_messages}"
+      end
+    end
+    counter
+  end
+
 
 end
