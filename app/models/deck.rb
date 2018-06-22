@@ -3,7 +3,7 @@ class Deck < ApplicationRecord
   belongs_to :format
   has_many :deck_cards, dependent: :delete_all
   has_many :cards, through: :deck_cards
-
+  belongs_to :event
   validates :name, :format, presence: true
 
   # scope :basic_wildcard, -> (term) { order(created_at: :desc).joins(:format, :user).where("name LIKE ? OR archtype LIKE ?", "%#{term}%", "%#{term}%")}

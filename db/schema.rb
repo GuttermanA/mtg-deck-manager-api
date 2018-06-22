@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20180521200506) do
+ActiveRecord::Schema.define(version: 20180622162704) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -127,9 +127,23 @@ ActiveRecord::Schema.define(version: 20180521200506) do
     t.boolean "tournament", default: false
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
+    t.integer "event_id"
     t.index ["archtype"], name: "index_decks_on_archtype"
+    t.index ["event_id"], name: "index_decks_on_event_id"
     t.index ["format_id"], name: "index_decks_on_format_id"
     t.index ["user_id"], name: "index_decks_on_user_id"
+  end
+
+  create_table "events", force: :cascade do |t|
+    t.citext "name"
+    t.date "date"
+    t.bigint "format_id"
+    t.integer "players"
+    t.string "external_link"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["format_id"], name: "index_events_on_format_id"
+    t.index ["name"], name: "index_events_on_name"
   end
 
   create_table "formats", force: :cascade do |t|

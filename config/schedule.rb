@@ -18,3 +18,9 @@
 # end
 
 # Learn more: http://github.com/javan/whenever
+
+env 'MAILTO', 'alexanderf.gutterman@gmail.com'
+
+every :weekday do
+  rake "update:seed_new_set"
+end
