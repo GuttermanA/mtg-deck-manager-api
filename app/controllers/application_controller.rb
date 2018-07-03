@@ -31,12 +31,31 @@ class ApplicationController < ActionController::API
   end
 
   def metadata_load
-    @formats = Format.all
-    @archtypes = Deck.distinct.pluck(:archtype)
-    @sets = MagicSet.all
-    @card_of_the_day = CardSerializer.new(cache_card_of_the_day)
-    @deck_of_the_day = DeckSerializer.new(cache_deck_of_the_day)
-    render json: {formats: @formats, archtypes: @archtypes, sets: @sets, card_of_the_day: @card_of_the_day, deck_of_the_day: @deck_of_the_day}
+    begin
+      @formats = Format.all
+      @archtypes = Deck.distinct.pluck(:archtype)
+      @sets = MagicSet.all
+      @card_of_the_day = CardSerializer.new(cache_card_of_the_day)
+      @deck_of_the_day = DeckSerializer.new(cache_deck_of_the_day)
+      render json: {formats: @formats, archtypes: @archtypes, sets: @sets, card_of_the_day: @card_of_the_day, deck_of_the_day: @deck_of_the_day}
+    rescue Exception => msg
+      render json: {
+        message: "A server error occured",
+        error: msg
+      }
+    end
+
+  end
+
+  def generate_error_text(*active_record_objects)
+    errors = {}
+    active_record_objects.each do |object|
+      object_errors = object.errors.full_messages
+      if object_errors.length > 0
+        errors[object] = object.errors.full_messages
+      end
+    end
+    errors
   end
 
 end

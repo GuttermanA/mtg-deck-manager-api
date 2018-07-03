@@ -22,4 +22,28 @@ class MagicSet < ApplicationRecord
     #   puts "No new sets found"
     # end
   end
+
+  def self.add_sets_from_card_data(card_data)
+    sets = []
+    card_data.printings.each do |printing|
+      set = MagicSet.find_by(code: printing)
+      if set
+        puts "#{set.name} found"
+        sets.push(set)
+      else
+        set_data =  MTG::Set.find(printing)
+        new_set = MagicSet.new(
+          name: set_data.name,
+          code: set_data.code,
+          release_date: set_data.release_date,
+          block: set_data.block
+        )
+        new_set.save
+        puts "Set #{new_set.name} created"
+        sets.push(new_set)
+      end
+    end
+    sets
+  end
+
 end

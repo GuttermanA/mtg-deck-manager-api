@@ -2,10 +2,44 @@
 
 # This model initially had no columns defined. If you add columns to the
 # model remove the '{}' from the fixture names and add the columns immediately
-# below each fixture, per the syntax in the comments below
+# below each fixture per the syntax in the comments below
 #
-one: {}
-# column: value
-#
-two: {}
-# column: value
+forest:
+ id: 1
+ name: Forest
+ mana_cost: NULL
+ cmc: 0
+ full_type: Basic Land — Forest
+ rarity: Basic Land
+ text: NULL
+ flavor: NULL
+ artist: John Avon
+ number: 216
+ power: NULL
+ toughness: NULL
+ loyalty: NULL
+ img_url: http://gatherer.wizards.com/Handlers/Image.ashx?multiverseid=439605&type=card
+ multiverse_id: 439605
+ layout: normal
+ primary_type: Land
+ last_printing: UST
+
+tidehollow_sculler:
+ id: 2
+ name: Tidehollow Sculler
+ mana_cost: '{W}{B}'
+ cmc: 2
+ full_type: Artifact Creature — Zombie
+ rarity: Uncommon
+ text: When Tidehollow Sculler enters the battlefield target opponent reveals his or her hand and you choose a nonland card from it. Exile that card.\nWhen Tidehollow Sculler leaves the battlefield return the exiled card to its owner's hand.
+ flavor: NULL
+ artist: rk post
+ number: 184
+ power: 2
+ toughness: 2
+ loyalty: NULL
+ img_url: http://gatherer.wizards.com/Handlers/Image.ashx?multiverseid=370375&type=card
+ multiverse_id: 370375
+ layout: normal
+ primary_type: Creature
+ last_printing: MMA

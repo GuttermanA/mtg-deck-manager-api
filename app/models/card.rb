@@ -153,9 +153,8 @@ class Card < ApplicationRecord
 
   def add_printings(card_data)
     if card_data.printings
-      card_data.printings.each do |printing|
-        self.magic_sets.push(MagicSet.find_by(code: printing))
-      end
+      sets = MagicSet.add_sets_from_card_data(card_data)
+      self.magic_sets.push(sets)
     end
   end
 
