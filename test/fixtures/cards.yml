@@ -43,3 +43,23 @@ tidehollow_sculler:
  layout: normal
  primary_type: Creature
  last_printing: MMA
+
+abattoir_ghoul:
+  id: 3
+  name: Abattoir Ghoul
+  mana_cost: '{3}{B}'
+  cmc: 4
+  full_type: Creature — Zombie
+  rarity: Uncommon
+  text: First strike\nWhenever a creature dealt damage by Abattoir Ghoul this turn dies, you gain life equal to that creature's toughness.
+  flavor: Death took his humanity but not his skill with the knife.
+  artist: Volkan Baga
+  number: 50
+  power: 3
+  toughness: 2
+  loyalty: nil
+  img_url: http://gatherer.wizards.com/Handlers/Image.ashx?multiverseid=409626&type=card
+  multiverse_id: 409626
+  layout: normal
+  primary_type: Creature
+  last_printing: DDQ
