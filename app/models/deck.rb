@@ -83,7 +83,6 @@ class Deck < ApplicationRecord
         deck[e[/^[^\ :]*/].downcase] = e[/(?<=: ).+/]
       end
     end
-    byebug
     @deck = Deck.new(
      name: deck["name"],
      format_id: Format.find_or_create_by(name: deck["format"]).id,
