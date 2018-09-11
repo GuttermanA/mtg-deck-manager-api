@@ -32,23 +32,6 @@ class Card < ApplicationRecord
     @cards
   end
 
-  # def self.basic_wildcard(arg)
-  #   sql = <<-SQL
-  #     SELECT
-  #       cards.*,
-  #       magic_sets.code AS set_code
-  #     FROM cards
-  #     INNER JOIN magic_sets ON
-  #     cards.magic_set_id = magic_sets.id
-  #     WHERE
-  #     cards.name LIKE ?
-  #     OR cards.full_type LIKE ?
-  #     ORDER BY cards.name ASC
-  #     LIMIT 50
-  #   SQL
-  #   Card.find_by_sql [sql, "%#{arg}%", "%#{arg}%"]
-  # end
-
   def self.default_search
     most_recent_set = MagicSet.order(release_date: :desc).limit(1)[0].code
     Card.order(name: :asc).where(last_printing: most_recent_set).limit(50)
@@ -195,54 +178,6 @@ class Card < ApplicationRecord
         new_card.add_subtypes(card_data)
         new_card.add_printings(card_data)
         new_card.add_legalities(card_data)
-
-        # if card_data.supertypes
-        #   card_data.supertypes.each do |supertype|
-        #     new_card.supertypes.push(Supertype.find_or_create_by(name: supertype))
-        #   end
-        # end
-
-        # if card_data.types
-          # card.types.each do |type|
-          #   new_card.types.push(Type.find_or_create_by(name: type))
-          # end
-          # new_card_types = new_card.types.map { |t| t.name }
-          # if new_card_types.include?("Creature")
-          #   new_card.primary_type = "Creature"
-          # else
-          #   new_card.primary_type = new_card_types.first
-          # end
-          # new_card.save
-        # end
-
-        # if card_data.subtypes
-          # card.subtypes.each do |subtype|
-          #   new_card.subtypes.push(Subtype.find_or_create_by(name: subtype))
-          # end
-        # end
-
-        # card.printings.each do |printing|
-        #   new_card.magic_sets.push(MagicSet.find_by(code: printing))
-        # end
-
-        # if card_data.legalities
-          # CardFormat.create(card_id: new_card.id, format_id: Format.find_or_create_by(name: "Casual").id, legal: true)
-          # card.legalities.each do |legality|
-          #   if formats.include?(legality.format)
-          #     legal = false
-          #     if legality.legality == 'Legal'
-          #       legal = true
-          #     end
-          #     CardFormat.find_or_create_by(card_id: new_card.id, format_id: Format.find_or_create_by(name: legality.format).id, legal: legal)
-          #   end
-          # end
-        # end
-
-        # if card.colors
-        #   card.colors.each do |color|
-        #     new_card.colors.push(Color.find_or_create_by(name: color))
-        #   end
-        # end
 
       else
         puts "Failed to create #{new_card.name}. Errors: #{new_card.errors.full_messages}"

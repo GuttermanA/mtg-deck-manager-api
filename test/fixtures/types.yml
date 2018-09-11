@@ -1,0 +1,7 @@
+zombie:
+  id: 1
+  name: Zombie
+
+basic_land:
+  id: 2
+  name: Basic Land
