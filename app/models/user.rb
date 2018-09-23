@@ -6,7 +6,7 @@ class User < ApplicationRecord
   has_secure_password
 
   def self.create_admin
-    if !self.find_by(name: admin)
+    if !self.find_by(name: 'admin')
       User.create(name: "admin", password: "1234", admin: true)
       puts "Admin account created"
     else

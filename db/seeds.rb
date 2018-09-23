@@ -1,13 +1,13 @@
 User.create_admin
 
-
-all_cards = MTG::Card.all
 puts "Fetching all cards..."
-all_sets = MTG::Set.all
+all_cards = MTG::Card.all
 puts "Fetch all sets..."
+all_sets = MTG::Set.all
 formats = ['Standard', 'Modern', 'Legacy', 'Vintage', 'Commander', 'Duel Commander']
 # all_cards = MTG::Card.where(name: 'Dominaria').all
 
+puts "Creating sets..."
 MagicSet.add(all_sets)
 
 # all_sets.each do |set|
@@ -24,6 +24,7 @@ MagicSet.add(all_sets)
 Format.find_or_create_by(name: "Casual")
 puts "Created custom format: Casual"
 
+puts "Seeding cards..."
 Card.seed(all_cards)
 
 # Update Dominaria legalities
