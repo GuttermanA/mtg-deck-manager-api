@@ -1,4 +1,4 @@
-User.create(name: "admin", password: "1234", admin: true)
+User.find_or_create_by(name: "admin", password: "1234", admin: true)
 
 all_cards = MTG::Card.all
 puts "Fetching all cards..."
@@ -7,16 +7,18 @@ puts "Fetch all sets..."
 formats = ['Standard', 'Modern', 'Legacy', 'Vintage', 'Commander', 'Duel Commander']
 # all_cards = MTG::Card.where(name: 'Dominaria').all
 
-all_sets.each do |set|
-  new_set = MagicSet.new(
-    name: set.name,
-    code: set.code,
-    release_date: set.release_date,
-    block: set.block
-  )
-  new_set.save
-  puts "Set #{new_set.name} created"
-end
+MagicSet.add(all_sets)
+
+# all_sets.each do |set|
+#   new_set = MagicSet.new(
+#     name: set.name,
+#     code: set.code,
+#     release_date: set.release_date,
+#     block: set.block
+#   )
+#   new_set.save
+#   puts "Set #{new_set.name} created"
+# end
 
 Format.find_or_create_by(name: "Casual")
 puts "Created custom format: Casual"
@@ -24,12 +26,12 @@ puts "Created custom format: Casual"
 Card.seed(all_cards)
 
 # Update Dominaria legalities
-Card.where(last_printing: "DOM").each do |c|
-  formats.each do |format|
-    CardFormat.find_or_create_by(card_id: c.id, format_id: Format.find_or_create_by(name: format).id, legal: true)
-  end
-end
-puts "Added missing legalities to Dominaria cards"
+# Card.where(last_printing: "DOM").each do |c|
+#   formats.each do |format|
+#     CardFormat.find_or_create_by(card_id: c.id, format_id: Format.find_or_create_by(name: format).id, legal: true)
+#   end
+# end
+# puts "Added missing legalities to Dominaria cards"
 
 puts "Success!"
 puts "Cards created: #{Card.all.size}"

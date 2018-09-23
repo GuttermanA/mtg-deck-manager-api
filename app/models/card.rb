@@ -25,6 +25,17 @@ class Card < ApplicationRecord
     self.deck_cards.find_by(deck_id: deck_id, sideboard: false).card_count
   end
 
+  def self.seed_from_sets(sets)
+    initial_card_size = Card.all.size
+
+    sets.each do |set|
+      new_cards = MTG::Card.where(setName: set).all
+      Card.seed(new_cards)
+    end
+
+    puts "Sucess. #{Card.all.size - initial_card_size} cards created from #{sets.size} sets."
+  end
+
   def self.search(params)
     if params[:term]
       @cards = Card.basic_wildcard(params[:term])
@@ -180,6 +191,9 @@ class Card < ApplicationRecord
         new_card.add_legalities(card_data)
 
       else
+        card = find_by(name: new_card.name)
+        card.add_printings(card_data)
+        card.add_legalities(card_data)
         puts "Failed to create #{new_card.name}. Errors: #{new_card.errors.full_messages}"
       end
     end
