@@ -1,4 +1,5 @@
-User.find_or_create_by(name: "admin", password: "1234", admin: true)
+User.create_admin
+
 
 all_cards = MTG::Card.all
 puts "Fetching all cards..."
